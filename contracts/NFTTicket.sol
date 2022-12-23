@@ -223,6 +223,10 @@ contract EventNFT is Context, ERC721URIStorage {
         return purchasedTickets[customer];
     }
 
+    function getAllCustomers() public view returns(address[] memory){
+        return customers;
+    }
+
     // Utility function to check if customer exists to avoid redundancy
     function isCustomerExist(address buyer) internal view returns (bool) {
         for (uint256 i = 0; i < customers.length; i++) {
