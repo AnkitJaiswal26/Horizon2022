@@ -7,10 +7,11 @@
 
 .wrapper {
     height: 100vh;
-    background-image: url("../../../images/ticket.avif");
+    background-image: linear-gradient(to right, rgba(0, 255, 255, 0.73), rgba(0, 42, 255, 0.52)),
+    url('../../../images/ticket.avif');
     background-position: center;
     background-size: cover;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .mainContainer {
@@ -49,7 +50,7 @@
 	width: 50%;
 	height: 65%;
     margin: auto;
-    margin-top: 105px;
+    margin-top: 125px;
     border-radius: 10px;
 	padding: 40px;
 	display: flex;
