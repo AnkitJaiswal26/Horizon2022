@@ -88,26 +88,35 @@
 .inputLabel {
 	font-family: 'Fira Sans', sans-serif;;
 	font-size: 1.1rem;
+	width: 50%;
 	color: #555;
 	font-weight: 600;
 	padding: 0;
 	margin: auto 0px;
 }
 
-.inputGroup{
+.inputGroup, .inputGroupLast{
 	width: 100%;
 	margin-bottom: 10px;
-	padding: 10px;
+	padding: 7px;
     display: flex;
     justify-content: space-around;
 }
 
-.input {
+.inputGroupLast, .both{
+    justify-content: space-between;	
+}
+
+.input, .inputCombined {
 	border: 0px;
     border-radius: 5px;
     padding: 10px 15px;
 	outline: none;
 	cursor: pointer;
+}
+
+.inputCombined{
+	width: 44%;
 }
 
 .fileInput {
