@@ -352,18 +352,6 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	const saleTicketAvailability = async (ticketId, contractAddress) => {
-		try {
-			// const provider = new ethers.providers.JsonRpcProvider();
-			const contract = await connectingWithEventNFT(contractAddress)
-			const result = await contract.isSaleTicketAvailable(ticketId);
-			console.log(result);		
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-	
 
 
 	const [myname, setMyname] = useState("Tanish");
