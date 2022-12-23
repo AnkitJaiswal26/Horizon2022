@@ -41,6 +41,9 @@
 	font-family: 'Chivo Mono', monospace;
 	margin: 0px 50px;
 }
+.navBarContentRight span:hover, .navBarContentLeft span:hover{
+	border-bottom: 1px solid #0087ca;
+}
 
 .mainContainer {
 	width: 100%;

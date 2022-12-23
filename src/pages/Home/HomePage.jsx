@@ -24,7 +24,13 @@ const HomePage = () => {
             <div className={styles.navBarContainer}>
               <div className={styles.navBarContent}>
                 <div className={styles.navBarContentLeft}>
-                  <span>Secure Ticket</span>
+                  <span
+                    onClick={() => {
+                      navigate("/");
+                    }}
+                  >
+                    Secure Ticket
+                  </span>
                 </div>
                 <div className={styles.navBarContentRight}>
                   <span

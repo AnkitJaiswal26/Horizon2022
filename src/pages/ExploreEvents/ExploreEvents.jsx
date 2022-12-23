@@ -64,7 +64,7 @@ const ExploreEvents = () => {
           <div className={styles.eventsListGrid}>
             {eventsList.map((event, id) => {
               return (
-                <div id={id} className={styles.eventBox}>
+                <div key={id} className={styles.eventBox}>
                   <div
                     onClick={() => {
                       navigate("/eventinfo");
