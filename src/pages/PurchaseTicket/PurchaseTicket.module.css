@@ -6,29 +6,27 @@
 }
 
 .wrapper {
-	background-image: url("../../../images/event2.3.1.jpg");
-	width: 100%;
-	height: 100vh;
-	background-size: cover;
+    height: 100vh;
+    background-image: url("../../../images/ticket.avif");
+    background-position: center;
+    background-size: cover;
+    opacity: 0.8;
 }
 
 .mainContainer {
 	width: 1000px;
 	height: 650px;
-	margin: auto;
-	padding: auto;
-	/* background-color: white; */
+    margin: auto;
 	border-radius: 5px;
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 }
 
 .contentBox {
 	width: 50%;
-	height: 25%;
-	/* background-color: #2b3445; */
+	height: 100%;
+	background-color: #2b3445;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -42,21 +40,24 @@
 }
 
 .contentBox h2 {
-	color: #8f00bc;
+	color: white;
 	font-size: 2em;
 	margin-bottom: 5px;
 }
 
 .formBox {
 	width: 50%;
-	height: 50%;
-	padding: 0px 40px;
+	height: 65%;
+    margin: auto;
+    margin-top: 105px;
+    border-radius: 10px;
+	padding: 40px;
 	display: flex;
 	flex-direction: column;
+    background-color: white;
 	justify-content: center;
 	align-items: center;
 	transition: 0.5s;
-	margin-bottom: 120px;
 }
 
 .formBox form {
@@ -65,16 +66,12 @@
 
 .heading {
 	font-size: 25px;
-	font-weight: 700;
+	font-weight: 900;
 	text-align: center;
 	width: 100%;
-	margin-bottom: 10px;
-	color: #555;
-	margin-bottom: 20px;
-}
-
-.both{
-	display: flex;
+	color: rgb(0, 0, 0);
+	margin-bottom: 25px;
+    margin-top: -20px;
 }
 
 .inputContainer {
@@ -88,10 +85,12 @@
 .inputLabel {
 	font-family: 'Fira Sans', sans-serif;;
 	font-size: 1.1rem;
+    width: 40%;
 	color: #555;
 	font-weight: 600;
 	padding: 0;
 	margin: auto 0px;
+    text-align: center;
 }
 
 .inputGroup{
@@ -106,7 +105,7 @@
 	border: 0px;
     border-radius: 5px;
     padding: 10px 15px;
-	outline: none;
+	/* outline: none; */
 	cursor: pointer;
 }
 
@@ -129,12 +128,6 @@
 	margin-top: 20px;
 }
 
-.alreadyLink {
-	font-size: 1rem;
-	color: rgb(99, 102, 241);
-	font-weight: 600;
-	margin-top: 20px;
-}
 .button{
     width: 30%;
     margin: auto;
@@ -147,15 +140,24 @@
     border-radius: 5px;
     padding: 5px;
 	cursor: pointer;
-	background-image: linear-gradient(to right, #89dde8, #aab6f2);
+	background-image: linear-gradient(to right, #00e1ff, #002aff);
 }
 
 .button:hover{
-	background-image: linear-gradient(to right, #aab6f2, #89dde8);
+	background-image: linear-gradient(to right, #002aff, #00e1ff);
 }
 
 .anchor{
 	text-decoration: none;
+    color: white;
+}
+
+
+.alreadyLink {
+	font-size: 1rem;
+	color: rgb(99, 102, 241);
+	font-weight: 600;
+	margin-top: 20px;
 }
 
 @media (max-width: 1050px) {
