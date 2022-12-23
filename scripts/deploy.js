@@ -6,16 +6,11 @@ async function main() {
 	);
 	const eventTicketsFactory = await EventTicketsFactory.deploy();
 
-	const EventToken = await hre.ethers.getContractFactory("EventToken");
-	const eventToken = await EventToken.deploy();
-
 	await eventTicketsFactory.deployed();
-	await eventToken.deployed();
 
 	console.log(
 		`Deployed event factory contract address ${eventTicketsFactory.address}`
 	);
-	console.log(`Deployed event token contract address ${eventToken.address}`);
 }
 
 main().catch((error) => {

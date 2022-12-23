@@ -8,14 +8,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-// import "hardhat/console.sol";
-
-contract EventToken is Context, ERC20 {
-    constructor() public ERC20("EventToken", "EVNT") {
-        _mint(_msgSender(), 10000 * (10 ** uint256(decimals())));
-    }
-}
-
 contract EventNFT is Context, ERC721URIStorage {
     using Counters for Counters.Counter;
 
@@ -287,34 +279,41 @@ contract EventNFT is Context, ERC721URIStorage {
 }
 
 contract EventMarketplace {
-    EventToken private _token;
     EventNFT private _event;
-
     address private _organiser;
 
-    constructor(EventToken token, EventNFT eventNFT) public {
-        _token = token;
+    constructor(EventNFT eventNFT) public {
         _event = eventNFT;
         _organiser = _event.getOrganiser();
     }
 
     event Purchase(address indexed buyer, address seller, uint256 ticketId);
 
-    function purchaseTicket(string memory tokenURI) public {
+    function purchaseTicket(string memory tokenURI) public payable {
+        uint256 price = _event.getTicketPrice();
+        require(
+            price == msg.value,
+            "Please submit the asking price in order to complete the purchase"
+        );
         address buyer = msg.sender;
-        _token.transferFrom(buyer, _organiser, _event.getTicketPrice());
+        payable(_organiser).transfer(msg.value);
         _event.transferTicket(buyer, tokenURI);
     }
 
     function secondaryPurchase(
         uint256 ticketId,
         string memory tokenURI
-    ) public {
+    ) public payable {
         address seller = _event.ownerOf(ticketId);
         address buyer = msg.sender;
         uint256 sellingPrice = _event.getSellingPrice(ticketId);
 
-        _token.transferFrom(buyer, seller, sellingPrice);
+        require(
+            sellingPrice == msg.value,
+            "Please submit the asking price in order to complete the purchase"
+        );
+
+        payable(seller).transfer(sellingPrice);
         _event.secondaryTransferTicket(buyer, ticketId, tokenURI);
 
         emit Purchase(buyer, seller, ticketId);
@@ -343,7 +342,6 @@ contract EventTicketsFactory {
 
     // Creates new NFT and a marketplace for its purchase
     function createNewEvent(
-        EventToken token,
         string memory eventName,
         string memory eventSymbol,
         string memory imageHash,
@@ -362,7 +360,7 @@ contract EventTicketsFactory {
             msg.sender
         );
 
-        EventMarketplace newMarketplace = new EventMarketplace(token, newEvent);
+        EventMarketplace newMarketplace = new EventMarketplace(newEvent);
 
         address newEventAddress = address(newEvent);
         activeEvents.push(newEventAddress);
@@ -412,24 +410,7 @@ contract EventTicketsFactory {
         returns (
             Event memory // string memory,
         )
-    // string memory,
-    // string memory,
-    // string memory,
-    // string memory,
-    // uint256,
-    // uint256,
-    // address
     {
         return activeEventsMapping[eventAddress];
-        //  (
-        //     activeEventsMapping[eventAddress].eventName,
-        //     activeEventsMapping[eventAddress].eventSymbol,
-        //     activeEventsMapping[eventAddress].imageHash,
-        //     activeEventsMapping[eventAddress].imageName,
-        //     activeEventsMapping[eventAddress].description,
-        //     activeEventsMapping[eventAddress].ticketPrice,
-        //     activeEventsMapping[eventAddress].totalSupply,
-        //     activeEventsMapping[eventAddress].marketplace
-        // );
     }
 }
