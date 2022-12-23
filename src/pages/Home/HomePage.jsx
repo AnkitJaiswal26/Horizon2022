@@ -1,15 +1,18 @@
 import react, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";
-import { NFTTicketContext } from "../../Context/NFTContext";
+import { NFTTicketProvider } from "../../Context/NFTContext"
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(0);
-  const state = useContext(NFTTicketContext);
-  console.log("In home context", state);
+  const state  = useContext(NFTTicketProvider);
 
+  useEffect( ()=> {
+    console.log("state", state);
+  })
   const getPage = () => {
+
     if (userRole == 0) {
       return (
         <div className={styles.homePageContainer}>

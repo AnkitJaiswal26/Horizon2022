@@ -1,12 +1,21 @@
 const hre = require("hardhat");
 
 async function main() {
-	const NFTTicket = await hre.ethers.getContractFactory("EventTicketsFactory");
-	const nFTTicket = await NFTTicket.deploy();
+	const EventTicketsFactory = await hre.ethers.getContractFactory(
+		"EventTicketsFactory"
+	);
+	const eventTicketsFactory = await EventTicketsFactory.deploy();
 
-	await nFTTicket.deployed();
+	const EventToken = await hre.ethers.getContractFactory("EventToken");
+	const eventToken = await EventToken.deploy();
 
-	console.log(`Deployed contract address ${nFTTicket.address}`);
+	await eventTicketsFactory.deployed();
+	await eventToken.deployed();
+
+	console.log(
+		`Deployed event factory contract address ${eventTicketsFactory.address}`
+	);
+	console.log(`Deployed event token contract address ${eventToken.address}`);
 }
 
 main().catch((error) => {
