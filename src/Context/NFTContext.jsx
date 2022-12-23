@@ -37,6 +37,7 @@ export const NFTTicketProvider = ({ children }) => {
 			});
 			if (accounts.length) {
 				setCurrentAccount(accounts[0]);
+				console.log("Current Account",accounts[0]);
 			} else {
 				console.log("No accounts found!");
 			}
@@ -70,6 +71,7 @@ export const NFTTicketProvider = ({ children }) => {
 				checkIfWalletConnected,
 				connectWallet,
 				currentAccount,
+				connectingWithSmartContract,
 				myname
 			}}
 		>
