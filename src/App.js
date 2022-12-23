@@ -5,6 +5,8 @@ import { EventTicketFactoryContext } from "./Context/NFTContext";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import OrganizeEventPage from "./pages/OrganizeEventPage/OrganizeEventPage";
+import ExploreEvents from "./pages/ExploreEvents/ExploreEvents";
+import EventInfoPage from "./pages/EventInfoPage/EventInfoPage";
 
 function App() {
   // const {myname} = useContext(NFTTicketContext);
@@ -21,7 +23,15 @@ function App() {
     {
       path: "/organizeevent",
       element: <OrganizeEventPage/>
-    }
+    },
+	{
+		path: "/events",
+		element: <ExploreEvents />,
+	},
+	{
+		path: "/eventInfo",
+		element: <EventInfoPage />,
+	},
   ]);
   return (
     // <div className="App">
@@ -44,6 +54,7 @@ function App() {
       <RouterProvider router={router}></RouterProvider>
     </EventTicketFactoryContext.Provider>
   );
+	
 }
 
 export default App;

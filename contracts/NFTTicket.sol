@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+
 // import "hardhat/console.sol";
 
 contract EventToken is Context, ERC20 {
@@ -279,6 +280,7 @@ contract EventNFT is Context, ERC721URIStorage {
 }
 
 contract EventMarketplace {
+    mapping(address => string) users;
     EventToken private _token;
     EventNFT private _event;
 
@@ -288,6 +290,14 @@ contract EventMarketplace {
         _token = token;
         _event = eventNFT;
         _organiser = _event.getOrganiser();
+    }
+
+    function registerUser(string memory ipfsHash) public {
+        users[msg.sender] = ipfsHash;
+    }
+
+    function getUser() public view returns (string memory) {
+        return users[msg.sender];
     }
 
     event Purchase(address indexed buyer, address seller, uint256 ticketId);

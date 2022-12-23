@@ -1,18 +1,18 @@
 import react, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";
-import { NFTTicketProvider } from "../../Context/NFTContext"
+import { NFTTicketProvider } from "../../Context/NFTContext";
+// import image from "../../../images/1.jpg";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(0);
-  const state  = useContext(NFTTicketProvider);
+  const state = useContext(NFTTicketProvider);
 
-  useEffect( ()=> {
+  useEffect(() => {
     console.log("state", state);
-  })
+  });
   const getPage = () => {
-
     if (userRole == 0) {
       return (
         <div className={styles.homePageContainer}>
@@ -27,9 +27,13 @@ const HomePage = () => {
                   <span>Secure Ticket</span>
                 </div>
                 <div className={styles.navBarContentRight}>
-                  <span onClick={() => {
+                  <span
+                    onClick={() => {
                       navigate("/organizeevent");
-                    }}>Oragnize an Event</span>
+                    }}
+                  >
+                    Oragnize an Event
+                  </span>
                   <span>Explore more!</span>
                 </div>
               </div>
@@ -58,6 +62,7 @@ const HomePage = () => {
               </div>
             </div>
           </div>
+          <div></div>
         </div>
       );
     } else {
