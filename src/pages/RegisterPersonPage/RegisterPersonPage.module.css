@@ -1,0 +1,138 @@
+* {
+	font-family: "Inter", sans-serif;
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+.wrapper {
+	background-color: #e9f2fc;
+}
+
+.mainContainer {
+	width: 1000px;
+	height: 650px;
+	background-color: white;
+	border-radius: 5px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.contentBox {
+	width: 50%;
+	height: 100%;
+	background-color: #2b3445;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.contentBox img {
+	width: "75%";
+	height: 80%;
+	border-radius: 4px;
+}
+
+.contentBox h2 {
+	color: white;
+	font-size: 2em;
+	margin-bottom: 5px;
+}
+
+.formBox {
+	width: 50%;
+	height: 100%;
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	transition: 0.5s;
+}
+
+.formBox form {
+	width: 100%;
+}
+
+.heading {
+	font-size: 25px;
+	font-weight: 700;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 10px;
+	color: #555;
+	margin-bottom: 20px;
+}
+
+.inputContainer {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.inputLabel {
+	font-size: 0.875rem;
+	color: #555;
+	font-weight: 600;
+	padding: 0;
+	margin: 0;
+}
+
+.input {
+	width: 100%;
+}
+
+.fileInput {
+	display: none;
+}
+
+.forgot {
+	font-size: 0.875rem;
+	color: rgba(99, 102, 241, 1);
+	font-weight: 600;
+	padding: 0;
+	margin: 0;
+}
+
+.already {
+	font-size: 1rem;
+	color: #555;
+	font-weight: 400;
+	margin-top: 20px;
+}
+
+.alreadyLink {
+	font-size: 1rem;
+	color: rgb(99, 102, 241);
+	font-weight: 600;
+	margin-top: 20px;
+}
+
+@media (max-width: 1050px) {
+	.mainContainer {
+		width: calc(100% - 50px);
+	}
+
+	.formBox {
+		width: 45%;
+	}
+
+	.contentBox {
+		width: 55%;
+	}
+}
+
+@media (max-width: 900px) {
+	.mainContainer {
+		width: calc(100% - 100px);
+	}
+
+	.contentBox {
+		display: none;
+	}
+
+	.formBox {
+		width: 100%;
+	}
+}
