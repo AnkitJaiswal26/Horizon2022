@@ -237,9 +237,11 @@ export const NFTTicketProvider = ({ children }) => {
 
 	const getActiveEvents = async () => {
 		try {
+			console.log("Hello");
 			const provider = new ethers.providers.JsonRpcProvider();
 			const contract = fetchEventTicketFactory(provider);
 			const data = await contract.getActiveEvents();
+			console.log(data);
 			var result = [];
 			for (let i = 0; i < data.length; i++) {
 				result.push(fetchEventDetails(data[i]));
@@ -310,15 +312,15 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	const getAllCustomers = async(contractAddress) => {
-		try{
-			const contract = await connectingWithEventNFT(contractAddress)
+	const getAllCustomers = async (contractAddress) => {
+		try {
+			const contract = await connectingWithEventNFT(contractAddress);
 			const users = await contract.getAllCustomers();
-			console.log(users)
-		}catch(err){
+			console.log(users);
+		} catch (err) {
 			console.log(err);
 		}
-	}
+	};
 
 	const fetchUser = async () => {
 		try {
@@ -352,8 +354,6 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-
-
 	const [myname, setMyname] = useState("Tanish");
 
 	return (
@@ -364,6 +364,16 @@ export const NFTTicketProvider = ({ children }) => {
 				currentAccount,
 				myname,
 				createEvent,
+				fetchAccount,
+				fetchMyTickets,
+				getActiveEvents,
+				onPurchaseTicket,
+				onSecondaryPurchaseTicket,
+				listForSale,
+				addUser,
+				fetchUser,
+				uploadJSONToIPFS,
+				uploadFilesToIPFS,
 			}}
 		>
 			{children}

@@ -223,7 +223,7 @@ contract EventNFT is Context, ERC721URIStorage {
         return purchasedTickets[customer];
     }
 
-    function getAllCustomers() public view returns(address[] memory){
+    function getAllCustomers() public view returns (address[] memory) {
         return customers;
     }
 
@@ -284,7 +284,6 @@ contract EventNFT is Context, ERC721URIStorage {
 }
 
 contract EventMarketplace {
-    mapping(address => string) users;
     EventToken private _token;
     EventNFT private _event;
 
@@ -294,14 +293,6 @@ contract EventMarketplace {
         _token = token;
         _event = eventNFT;
         _organiser = _event.getOrganiser();
-    }
-
-    function registerUser(string memory ipfsHash) public {
-        users[msg.sender] = ipfsHash;
-    }
-
-    function getUser() public view returns (string memory) {
-        return users[msg.sender];
     }
 
     event Purchase(address indexed buyer, address seller, uint256 ticketId);
@@ -319,11 +310,8 @@ contract EventMarketplace {
         address seller = _event.ownerOf(ticketId);
         address buyer = msg.sender;
         uint256 sellingPrice = _event.getSellingPrice(ticketId);
-        uint256 commision = (sellingPrice * 10) / 100;
 
-        _token.transferFrom(buyer, seller, sellingPrice - commision);
-        _token.transferFrom(buyer, _organiser, commision);
-
+        _token.transferFrom(buyer, seller, sellingPrice);
         _event.secondaryTransferTicket(buyer, ticketId, tokenURI);
 
         emit Purchase(buyer, seller, ticketId);
@@ -340,6 +328,8 @@ contract EventTicketsFactory {
         address marketplace;
     }
 
+    mapping(address => string) users;
+
     address[] private activeEvents;
     address[] private activeEventsMarketplace;
     mapping(address => Event) private activeEventsMapping;
@@ -354,7 +344,7 @@ contract EventTicketsFactory {
         string memory imageHash,
         uint256 ticketPrice,
         uint256 totalSupply
-    ) public returns (address, address) {
+    ) public {
         EventNFT newEvent = new EventNFT(
             eventName,
             eventSymbol,
@@ -381,6 +371,14 @@ contract EventTicketsFactory {
         emit Created(newEventAddress, address(newMarketplace));
     }
 
+    function registerUser(string memory ipfsHash) public {
+        users[msg.sender] = ipfsHash;
+    }
+
+    function getUser() public view returns (string memory) {
+        return users[msg.sender];
+    }
+
     function fetchNewEventAddress() public view returns (address) {
         require(activeEvents.length > 0, "No event exists!");
         return activeEvents[activeEvents.length - 1];
@@ -401,11 +399,19 @@ contract EventTicketsFactory {
     )
         public
         view
-        returns (string memory, string memory, uint256, uint256, address)
+        returns (
+            string memory,
+            string memory,
+            string memory,
+            uint256,
+            uint256,
+            address
+        )
     {
         return (
             activeEventsMapping[eventAddress].eventName,
             activeEventsMapping[eventAddress].eventSymbol,
+            activeEventsMapping[eventAddress].imageHash,
             activeEventsMapping[eventAddress].ticketPrice,
             activeEventsMapping[eventAddress].totalSupply,
             activeEventsMapping[eventAddress].marketplace
