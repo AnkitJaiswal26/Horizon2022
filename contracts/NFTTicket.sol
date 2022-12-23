@@ -1,198 +1,404 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "hardhat/console.sol";
 
-contract NFTTicket is ERC721URIStorage {
+contract EventToken is Context, ERC20 {
+    constructor() public ERC20("EventToken", "EVNT") {
+        _mint(_msgSender(), 10000 * (10 ** uint256(decimals())));
+    }
+}
+
+contract EventNFT is Context, ERC721URIStorage {
     using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
-    Counters.Counter private _itemsSold;
 
-    uint256 listingPrice = 0.025 ether;
-    address payable owner;
+    Counters.Counter private _ticketIds;
+    Counters.Counter private _saleTicketId;
 
-    mapping(uint256 => Ticket) private idToTicket;
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    struct Ticket {
-        uint256 tokenId;
-        address payable seller;
-        address payable owner;
-        uint256 price;
-        bool sold;
+    struct TicketDetails {
+        uint256 purchasePrice;
+        uint256 sellingPrice;
+        bool forSale;
     }
 
-    event TicketCreated(
-        uint256 indexed tokenId,
-        address seller,
-        address owner,
-        uint256 price,
-        bool sold
-    );
+    address private _organiser;
+    string private _imageHash;
+    address[] private customers;
+    uint256[] private ticketsForSale;
+    uint256 private _ticketPrice;
+    uint256 private _totalSupply;
 
-    modifier onlyOwner() {
+    mapping(uint256 => TicketDetails) private _ticketDetails;
+    mapping(address => uint256[]) private purchasedTickets;
+
+    constructor(
+        string memory eventName,
+        string memory eventSymbol,
+        string memory imageHash,
+        uint256 ticketPrice,
+        uint256 totalSupply,
+        address organiser
+    ) ERC721(eventName, eventSymbol) {
+        _ticketPrice = ticketPrice;
+        _totalSupply = totalSupply;
+        _organiser = organiser;
+        _imageHash = imageHash;
+    }
+
+    modifier isValidTicketCount() {
         require(
-            msg.sender == owner,
-            "only owner of the Ticket can change the listing price"
+            _ticketIds.current() < _totalSupply,
+            "Maximum ticket limit exceeded!"
         );
         _;
     }
 
-    constructor() ERC721("Metaverse Tokens", "METT") {
-        owner = payable(msg.sender);
+    modifier isOrganiser() {
+        require(_organiser == msg.sender, "User must have minter role to mint");
+        _;
     }
 
-    /* Updates the listing price of the contract */
-    function updateListingPrice(
-        uint256 _listingPrice
-    ) public payable onlyOwner {
+    modifier isValidSellAmount(uint256 ticketId) {
+        uint256 purchasePrice = _ticketDetails[ticketId].purchasePrice;
+        uint256 sellingPrice = _ticketDetails[ticketId].sellingPrice;
+
         require(
-            owner == msg.sender,
-            "Only ticket owner can update listing price."
+            purchasePrice + ((purchasePrice * 110) / 100) > sellingPrice,
+            "Re-selling price is more than 110%"
         );
-        listingPrice = _listingPrice;
+        _;
     }
 
-    /* Returns the listing price of the contract */
-    function getListingPrice() public view returns (uint256) {
-        return listingPrice;
-    }
-
-    /* Mints a token and lists it in the ticket */
-    function createToken(
+    function mint(
         string memory tokenURI,
-        uint256 price
-    ) public payable returns (uint256) {
-        _tokenIds.increment();
-        uint256 newTokenId = _tokenIds.current();
+        address operator
+    ) internal virtual isOrganiser returns (uint256) {
+        _ticketIds.increment();
+        uint256 newTicketId = _ticketIds.current();
+        _mint(operator, newTicketId);
+        _setTokenURI(newTicketId, tokenURI);
 
-        _mint(msg.sender, newTokenId);
-        _setTokenURI(newTokenId, tokenURI);
-        createTicket(newTokenId, price);
-        return newTokenId;
+        _ticketDetails[newTicketId] = TicketDetails({
+            purchasePrice: _ticketPrice,
+            sellingPrice: 0,
+            forSale: false
+        });
+
+        return newTicketId;
     }
 
-    function createTicket(uint256 tokenId, uint256 price) private {
-        require(price > 0, "Price must be at least 1 wei");
+    function bulkMintTickets(
+        uint256 numOfTickets,
+        address operator,
+        string[] memory tokensURI
+    ) public virtual isValidTicketCount {
         require(
-            msg.value == listingPrice,
-            "Price must be equal to listing price"
+            (ticketCounts() + numOfTickets) <= 1000,
+            "Number of tickets exceeds maximum ticket count"
         );
 
-        idToTicket[tokenId] = Ticket(
-            tokenId,
-            payable(msg.sender),
-            payable(address(this)),
-            price,
-            false
-        );
-
-        _transfer(msg.sender, address(this), tokenId);
-        emit TicketCreated(tokenId, msg.sender, address(this), price, false);
+        for (uint256 i = 0; i < numOfTickets; i++) {
+            mint(tokensURI[i], operator);
+        }
     }
 
-    /* allows someone to resell a token they have purchased */
-    function resellToken(uint256 tokenId, uint256 price) public payable {
+    function transferTicket(address buyer, string memory tokenURI) public {
+        _saleTicketId.increment();
+        uint256 saleTicketId = _saleTicketId.current();
+
         require(
-            idToTicket[tokenId].owner == msg.sender,
-            "Only item owner can perform this operation"
+            msg.sender == ownerOf(saleTicketId),
+            "Only initial purchase allowed"
         );
+
+        transferFrom(ownerOf(saleTicketId), buyer, saleTicketId);
+        _setTokenURI(saleTicketId, tokenURI);
+
+        if (!isCustomerExist(buyer)) {
+            customers.push(buyer);
+        }
+        purchasedTickets[buyer].push(saleTicketId);
+    }
+
+    function secondaryTransferTicket(
+        address buyer,
+        uint256 saleTicketId,
+        string memory tokenURI
+    ) public isValidSellAmount(saleTicketId) {
+        address seller = ownerOf(saleTicketId);
+        uint256 sellingPrice = _ticketDetails[saleTicketId].sellingPrice;
+
+        transferFrom(seller, buyer, saleTicketId);
+        _setTokenURI(saleTicketId, tokenURI);
+
+        if (!isCustomerExist(buyer)) {
+            customers.push(buyer);
+        }
+
+        purchasedTickets[buyer].push(saleTicketId);
+
+        removeTicketFromCustomer(seller, saleTicketId);
+        removeTicketFromSale(saleTicketId);
+
+        _ticketDetails[saleTicketId] = TicketDetails({
+            purchasePrice: sellingPrice,
+            sellingPrice: 0,
+            forSale: false
+        });
+    }
+
+    function setSaleDetails(
+        uint256 ticketId,
+        uint256 sellingPrice,
+        address operator
+    ) public {
+        uint256 purchasePrice = _ticketDetails[ticketId].purchasePrice;
+
         require(
-            msg.value == listingPrice,
-            "Price must be equal to listing price"
+            purchasePrice + ((purchasePrice * 110) / 100) > sellingPrice,
+            "Re-selling price is more than 110%"
         );
-        idToTicket[tokenId].sold = false;
-        idToTicket[tokenId].price = price;
-        idToTicket[tokenId].seller = payable(msg.sender);
-        idToTicket[tokenId].owner = payable(address(this));
-        _itemsSold.decrement();
 
-        _transfer(msg.sender, address(this), tokenId);
-    }
-
-    /* Creates the sale of a marketplace item */
-    /* Transfers ownership of the item, as well as funds between parties */
-    function createTicketSale(uint256 tokenId) public payable {
-        uint256 price = idToTicket[tokenId].price;
         require(
-            msg.value == price,
-            "Please submit the asking price in order to complete the purchase"
+            _organiser != msg.sender,
+            "Functionality only allowed for secondary market"
         );
-        idToTicket[tokenId].owner = payable(msg.sender);
-        idToTicket[tokenId].sold = true;
-        idToTicket[tokenId].seller = payable(address(0));
-        _itemsSold.increment();
-        _transfer(address(this), msg.sender, tokenId);
-        payable(owner).transfer(listingPrice);
-        payable(idToTicket[tokenId].seller).transfer(msg.value);
+
+        _ticketDetails[ticketId].sellingPrice = sellingPrice;
+        _ticketDetails[ticketId].forSale = true;
+
+        if (!isSaleTicketAvailable(ticketId)) {
+            ticketsForSale.push(ticketId);
+        }
+
+        approve(operator, ticketId);
     }
 
-    /* Returns all unsold market items */
-    function fetchTickets() public view returns (Ticket[] memory) {
-        uint256 itemCount = _tokenIds.current();
-        uint256 unsoldItemCount = _tokenIds.current() - _itemsSold.current();
-        uint256 currentIndex = 0;
-
-        Ticket[] memory items = new Ticket[](unsoldItemCount);
-        for (uint256 i = 0; i < itemCount; i++) {
-            if (idToTicket[i + 1].owner == address(this)) {
-                uint256 currentId = i + 1;
-                Ticket storage currentItem = idToTicket[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
+    // Get ticket actual price
+    function getTicketPrice() public view returns (uint256) {
+        return _ticketPrice;
     }
 
-    /* Returns only items that a user has purchased */
-    function fetchMyNFTs() public view returns (Ticket[] memory) {
-        uint256 totalItemCount = _tokenIds.current();
-        uint256 itemCount = 0;
-        uint256 currentIndex = 0;
-
-        for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToTicket[i + 1].owner == msg.sender) {
-                itemCount += 1;
-            }
-        }
-
-        Ticket[] memory items = new Ticket[](itemCount);
-        for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToTicket[i + 1].owner == msg.sender) {
-                uint256 currentId = i + 1;
-                Ticket storage currentItem = idToTicket[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
+    // Get organiser's address
+    function getOrganiser() public view returns (address) {
+        return _organiser;
     }
 
-    /* Returns only items a user has listed */
-    function fetchItemsListed() public view returns (Ticket[] memory) {
-        uint256 totalItemCount = _tokenIds.current();
-        uint256 itemCount = 0;
-        uint256 currentIndex = 0;
+    // Get current ticketId
+    function ticketCounts() public view returns (uint256) {
+        return _ticketIds.current();
+    }
 
-        for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToTicket[i + 1].seller == msg.sender) {
-                itemCount += 1;
+    // Get next sale ticketId
+    function getNextSaleTicketId() public view returns (uint256) {
+        return _saleTicketId.current();
+    }
+
+    // Get selling price for the ticket
+    function getSellingPrice(uint256 ticketId) public view returns (uint256) {
+        return _ticketDetails[ticketId].sellingPrice;
+    }
+
+    // Get all tickets available for sale
+    function getTicketsForSale() public view returns (uint256[] memory) {
+        return ticketsForSale;
+    }
+
+    // Get ticket details
+    function getTicketDetails(
+        uint256 ticketId
+    )
+        public
+        view
+        returns (uint256 purchasePrice, uint256 sellingPrice, bool forSale)
+    {
+        return (
+            _ticketDetails[ticketId].purchasePrice,
+            _ticketDetails[ticketId].sellingPrice,
+            _ticketDetails[ticketId].forSale
+        );
+    }
+
+    // Get all tickets owned by a customer
+    function getTicketsOfCustomer(
+        address customer
+    ) public view returns (uint256[] memory) {
+        return purchasedTickets[customer];
+    }
+
+    // Utility function to check if customer exists to avoid redundancy
+    function isCustomerExist(address buyer) internal view returns (bool) {
+        for (uint256 i = 0; i < customers.length; i++) {
+            if (customers[i] == buyer) {
+                return true;
             }
         }
+        return false;
+    }
 
-        Ticket[] memory items = new Ticket[](itemCount);
-        for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToTicket[i + 1].seller == msg.sender) {
-                uint256 currentId = i + 1;
-                Ticket storage currentItem = idToTicket[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
+    // Utility function used to check if ticket is already for sale
+    function isSaleTicketAvailable(
+        uint256 ticketId
+    ) internal view returns (bool) {
+        for (uint256 i = 0; i < ticketsForSale.length; i++) {
+            if (ticketsForSale[i] == ticketId) {
+                return true;
             }
         }
-        return items;
+        return false;
+    }
+
+    // Utility function to remove ticket owned by customer from customer to ticket mapping
+    function removeTicketFromCustomer(
+        address customer,
+        uint256 ticketId
+    ) internal {
+        uint256 numOfTickets = purchasedTickets[customer].length;
+
+        for (uint256 i = 0; i < numOfTickets; i++) {
+            if (purchasedTickets[customer][i] == ticketId) {
+                for (uint256 j = i + 1; j < numOfTickets; j++) {
+                    purchasedTickets[customer][j - 1] = purchasedTickets[
+                        customer
+                    ][j];
+                }
+                purchasedTickets[customer].pop();
+            }
+        }
+    }
+
+    // Utility function to remove ticket from sale list
+    function removeTicketFromSale(uint256 ticketId) internal {
+        uint256 numOfTickets = ticketsForSale.length;
+
+        for (uint256 i = 0; i < numOfTickets; i++) {
+            if (ticketsForSale[i] == ticketId) {
+                for (uint256 j = i + 1; j < numOfTickets; j++) {
+                    ticketsForSale[j - 1] = ticketsForSale[j];
+                }
+                ticketsForSale.pop();
+            }
+        }
+    }
+}
+
+contract EventMarketplace {
+    EventToken private _token;
+    EventNFT private _event;
+
+    address private _organiser;
+
+    constructor(EventToken token, EventNFT eventNFT) public {
+        _token = token;
+        _event = eventNFT;
+        _organiser = _event.getOrganiser();
+    }
+
+    event Purchase(address indexed buyer, address seller, uint256 ticketId);
+
+    function purchaseTicket(string memory tokenURI) public {
+        address buyer = msg.sender;
+        _token.transferFrom(buyer, _organiser, _event.getTicketPrice());
+        _event.transferTicket(buyer, tokenURI);
+    }
+
+    function secondaryPurchase(
+        uint256 ticketId,
+        string memory tokenURI
+    ) public {
+        address seller = _event.ownerOf(ticketId);
+        address buyer = msg.sender;
+        uint256 sellingPrice = _event.getSellingPrice(ticketId);
+        uint256 commision = (sellingPrice * 10) / 100;
+
+        _token.transferFrom(buyer, seller, sellingPrice - commision);
+        _token.transferFrom(buyer, _organiser, commision);
+
+        _event.secondaryTransferTicket(buyer, ticketId, tokenURI);
+
+        emit Purchase(buyer, seller, ticketId);
+    }
+}
+
+contract EventTicketsFactory is Ownable {
+    struct Event {
+        string eventName;
+        string eventSymbol;
+        string imageHash;
+        uint256 ticketPrice;
+        uint256 totalSupply;
+        address marketplace;
+    }
+
+    address[] private activeEvents;
+    mapping(address => Event) private activeEventsMapping;
+
+    event Created(address ntfAddress, address marketplaceAddress);
+
+    // Creates new NFT and a marketplace for its purchase
+    function createNewEvent(
+        EventToken token,
+        string memory eventName,
+        string memory eventSymbol,
+        string memory imageHash,
+        uint256 ticketPrice,
+        uint256 totalSupply
+    ) public onlyOwner returns (address) {
+        EventNFT newEvent = new EventNFT(
+            eventName,
+            eventSymbol,
+            imageHash,
+            ticketPrice,
+            totalSupply,
+            msg.sender
+        );
+
+        EventMarketplace newMarketplace = new EventMarketplace(token, newEvent);
+
+        address newEventAddress = address(newEvent);
+
+        activeEvents.push(newEventAddress);
+        activeEventsMapping[newEventAddress] = Event({
+            eventName: eventName,
+            eventSymbol: eventSymbol,
+            imageHash: imageHash,
+            ticketPrice: ticketPrice,
+            totalSupply: totalSupply,
+            marketplace: address(newMarketplace)
+        });
+
+        emit Created(newEventAddress, address(newMarketplace));
+
+        return newEventAddress;
+    }
+
+    // Get all active fests
+    function getActiveEvents() public view returns (address[] memory) {
+        return activeEvents;
+    }
+
+    // Get fest's details
+    function getEventDetails(
+        address eventAddress
+    )
+        public
+        view
+        returns (string memory, string memory, uint256, uint256, address)
+    {
+        return (
+            activeEventsMapping[eventAddress].eventName,
+            activeEventsMapping[eventAddress].eventSymbol,
+            activeEventsMapping[eventAddress].ticketPrice,
+            activeEventsMapping[eventAddress].totalSupply,
+            activeEventsMapping[eventAddress].marketplace
+        );
     }
 }
