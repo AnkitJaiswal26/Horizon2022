@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./ExploreEvents.module.css";
 import { EventTicketFactoryContext } from "../../Context/NFTContext";
 
 const ExploreEvents = () => {
+	const navigate = useNavigate();
 	const { getActiveEvents } = useContext(EventTicketFactoryContext);
 
 	const [events, setEvents] = useState([
@@ -56,15 +58,53 @@ const ExploreEvents = () => {
 						Explore Events
 					</span>
 					<div className={styles.eventsListGrid}>
-						{events.map((event, index) => {
+						{events.map((event) => {
 							return (
-								<div className={styles.eventsCard} key={index}>
-									<span className={styles.eventName}>
-										Event Name
-									</span>
-									<span className={styles.eventDescription}>
-										Description
-									</span>
+								<div className={styles.gridEvents}>
+									<div className={styles.eventBox}>
+										<button
+											onClick={() => {
+												navigate("/registerPerson");
+											}}
+											className={styles.eventName}
+											style={{
+												marginRight: "40px",
+											}}
+										>
+											<span>event.name</span>
+										</button>
+										{/* <img src={{ image }} /> */}
+										<div
+											className={styles.eventDescription}
+										>
+											event.desc
+										</div>
+										<div>Ticket Prize</div>
+										<div>
+											<button
+												onClick={() => {
+													navigate("/registerPerson");
+												}}
+												className={styles.registerBtn}
+												style={{
+													marginRight: "40px",
+												}}
+											>
+												<span>Buy</span>
+											</button>
+											<button
+												onClick={() => {
+													navigate("/registerPerson");
+												}}
+												className={styles.registerBtn}
+												style={{
+													marginRight: "40px",
+												}}
+											>
+												<span>Sell</span>
+											</button>
+										</div>
+									</div>
 								</div>
 							);
 						})}

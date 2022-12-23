@@ -114,7 +114,7 @@ export const NFTTicketProvider = ({ children }) => {
 			});
 			if (accounts.length) {
 				setCurrentAccount(accounts[0]);
-				console.log("Current Account", accounts[0]);
+				console.log("Current Account", currentAccount);
 			} else {
 				console.log("No accounts found!");
 			}
