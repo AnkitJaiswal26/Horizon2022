@@ -36,6 +36,7 @@ contract EventNFT is Context, ERC721URIStorage {
     uint256[] private ticketsForSale;
     uint256 private _ticketPrice;
     uint256 private _totalSupply;
+    string private _description;
 
     mapping(uint256 => TicketDetails) private _ticketDetails;
     mapping(address => uint256[]) private purchasedTickets;
@@ -44,6 +45,7 @@ contract EventNFT is Context, ERC721URIStorage {
         string memory eventName,
         string memory eventSymbol,
         string memory imageHash,
+        string memory description,
         uint256 ticketPrice,
         uint256 totalSupply,
         address organiser
@@ -52,6 +54,7 @@ contract EventNFT is Context, ERC721URIStorage {
         _totalSupply = totalSupply;
         _organiser = organiser;
         _imageHash = imageHash;
+        _description = description;
     }
 
     modifier isValidTicketCount() {
@@ -323,6 +326,8 @@ contract EventTicketsFactory {
         string eventName;
         string eventSymbol;
         string imageHash;
+        string imageName;
+        string description;
         uint256 ticketPrice;
         uint256 totalSupply;
         address marketplace;
@@ -342,6 +347,8 @@ contract EventTicketsFactory {
         string memory eventName,
         string memory eventSymbol,
         string memory imageHash,
+        string memory imageName,
+        string memory description,
         uint256 ticketPrice,
         uint256 totalSupply
     ) public {
@@ -349,6 +356,7 @@ contract EventTicketsFactory {
             eventName,
             eventSymbol,
             imageHash,
+            description,
             ticketPrice,
             totalSupply,
             msg.sender
@@ -362,6 +370,8 @@ contract EventTicketsFactory {
             eventName: eventName,
             eventSymbol: eventSymbol,
             imageHash: imageHash,
+            imageName: imageName,
+            description: description,
             ticketPrice: ticketPrice,
             totalSupply: totalSupply,
             marketplace: address(newMarketplace)
@@ -400,21 +410,26 @@ contract EventTicketsFactory {
         public
         view
         returns (
-            string memory,
-            string memory,
-            string memory,
-            uint256,
-            uint256,
-            address
+            Event memory // string memory,
         )
+    // string memory,
+    // string memory,
+    // string memory,
+    // string memory,
+    // uint256,
+    // uint256,
+    // address
     {
-        return (
-            activeEventsMapping[eventAddress].eventName,
-            activeEventsMapping[eventAddress].eventSymbol,
-            activeEventsMapping[eventAddress].imageHash,
-            activeEventsMapping[eventAddress].ticketPrice,
-            activeEventsMapping[eventAddress].totalSupply,
-            activeEventsMapping[eventAddress].marketplace
-        );
+        return activeEventsMapping[eventAddress];
+        //  (
+        //     activeEventsMapping[eventAddress].eventName,
+        //     activeEventsMapping[eventAddress].eventSymbol,
+        //     activeEventsMapping[eventAddress].imageHash,
+        //     activeEventsMapping[eventAddress].imageName,
+        //     activeEventsMapping[eventAddress].description,
+        //     activeEventsMapping[eventAddress].ticketPrice,
+        //     activeEventsMapping[eventAddress].totalSupply,
+        //     activeEventsMapping[eventAddress].marketplace
+        // );
     }
 }
