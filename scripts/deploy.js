@@ -1,7 +1,7 @@
 const hre = require("hardhat");
 
 async function main() {
-	const NFTTicket = await hre.ethers.getContractFactory("NFTTicket");
+	const NFTTicket = await hre.ethers.getContractFactory("EventTicketsFactory");
 	const nFTTicket = await NFTTicket.deploy();
 
 	await nFTTicket.deployed();

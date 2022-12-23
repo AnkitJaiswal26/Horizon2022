@@ -1,7 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
+import { useContext } from 'react';
+import { NFTTicketContext } from './Context/NFTContext';
 
 function App() {
+  const {myname} = useContext(NFTTicketContext)
   return (
     <div className="App">
       <header className="App-header">
@@ -15,7 +18,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn React {myname}
         </a>
       </header>
     </div>

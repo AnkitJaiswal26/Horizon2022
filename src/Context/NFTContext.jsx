@@ -62,12 +62,15 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
+	const [myname, setMyname] = useState("Tanish");
+
 	return (
 		<NFTTicketContext.Provider
 			value={{
 				checkIfWalletConnected,
 				connectWallet,
 				currentAccount,
+				myname
 			}}
 		>
 			{children}
