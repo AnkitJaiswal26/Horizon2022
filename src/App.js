@@ -1,22 +1,20 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { useContext, useState } from "react";
-import { NFTTicketContext } from "./Context/NFTContext";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import RegisterPersonPage from "./pages/RegisterPersonPage/RegisterPersonPage";
+import ExploreEvents from "./pages/ExploreEvents/ExploreEvents";
 
 function App() {
 	// const {myname} = useContext(NFTTicketContext);
-	const state = useContext(NFTTicketContext);
-	console.log(state);
-	const {
-		checkIfWalletConnected,
-		connectWallet,
-		currentAccount,
-		connectingWithSmartContract,
-		myname,
-	} = state;
+	// const state = useContext(NFTTicketContext);
+	// console.log(state);
+	// const {
+	// 	checkIfWalletConnected,
+	// 	connectWallet,
+	// 	currentAccount,
+	// 	connectingWithSmartContract,
+	// 	myname,
+	// } = state;
 
 	const router = createBrowserRouter([
 		{
@@ -26,6 +24,10 @@ function App() {
 		{
 			path: "/registerperson",
 			element: <RegisterPersonPage />,
+		},
+		{
+			path: "/events",
+			element: <ExploreEvents />,
 		},
 	]);
 	return (
@@ -45,9 +47,7 @@ function App() {
 		//     </a>
 		//   </header>
 		// </div>
-		<NFTTicketContext.Provider value={{ state }}>
-			<RouterProvider router={router}></RouterProvider>
-		</NFTTicketContext.Provider>
+		<RouterProvider router={router}></RouterProvider>
 	);
 }
 

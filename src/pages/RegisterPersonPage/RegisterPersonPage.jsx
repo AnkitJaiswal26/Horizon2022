@@ -1,11 +1,9 @@
 import React, { useState, useContext, useRef } from "react";
 import styles from "./RegisterPersonPage.module.css";
-import { NFTTicketContext } from "../../Context/NFTContext";
 import { useNavigate } from "react-router-dom";
 import UploadToIPFS from "../../ipfs";
 
 const RegisterPersonPage = () => {
-	const { state } = useContext(NFTTicketContext);
 	const navigate = useNavigate();
 
 	const uploadImageInput = useRef(null);
@@ -51,14 +49,14 @@ const RegisterPersonPage = () => {
 		}
 
 		try {
-			const { currentAccount, connectingWithSmartContract } = state;
-			console.log(currentAccount);
-			const cid = await UploadToIPFS(state, imageFile);
-			console.log(cid);
+			// const { currentAccount, connectingWithSmartContract } = state;
+			// console.log(currentAccount);
+			// const cid = await UploadToIPFS(state, imageFile);
+			// console.log(cid);
 
-            await connectingWithSmartContract.methods.registerPerson(`${currentAccount}`, cid, fileName, name, gender, aadhar, phyAddress, dob, contactNo).send({ from: currentAccount });
-            const res = await connectingWithSmartContract.methods.getPerson(`${currentAccount}`).call();
-            console.log(res);
+            // await connectingWithSmartContract.methods.registerPerson(`${currentAccount}`, cid, fileName, name, gender, aadhar, phyAddress, dob, contactNo).send({ from: currentAccount });
+            // const res = await connectingWithSmartContract.methods.getPerson(`${currentAccount}`).call();
+            // console.log(res);
 
             navigate("/");
 
