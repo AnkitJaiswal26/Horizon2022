@@ -1,0 +1,88 @@
+.eventsPageContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #2A2D37;
+    min-height: 100vh;
+    color: white;
+}
+
+.eventPageHeader{
+    width: 100%;
+    background-color: #1C1F27;
+    padding: 24px;
+    font-weight: bold;
+    border-bottom: 0.4rem solid #1DA0FF;
+    font-size: 20px;
+}
+
+.eventPageBody{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.eventInfoContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.eventInfoTitle{
+    margin-bottom: 0.5rem;
+
+}
+
+.eventInfoCard{
+    background-color: #1C1F27;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.eventInfoDetails{
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.eventInfoName{
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #1DA0FF;
+    font-size: 18px;
+}
+
+.eventInfoDesc{
+    margin-bottom: 1rem;
+}
+
+.eventInfoDesc, .eventInfoPrice{
+    color: #cfcfcf;
+}
+
+.eventTicketBuyBtn{
+    cursor: pointer;
+    margin-top: 1rem;
+    border: none;
+    outline: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #1DA0FF;
+    color: white;
+    font-weight: bold;
+}
+
+.eventTicketBuyBtn:hover{
+    background-color: #0c75c0;
+}
+
+.eventInfoImage{
+    height: 250px;
+    flex: 1;
+    background-image: url('https://i.ytimg.com/vi/XyzdoD0PrFc/maxresdefault.jpg');
+    background-size: cover;
+    background-position: center ;
+    border-radius: 4px;
+}

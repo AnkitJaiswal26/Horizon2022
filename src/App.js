@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import RegisterPersonPage from "./pages/RegisterPersonPage/RegisterPersonPage";
 import ExploreEvents from "./pages/ExploreEvents/ExploreEvents";
+import EventInfoPage from "./pages/EventInfoPage/EventInfoPage";
 
 function App() {
 	// const {myname} = useContext(NFTTicketContext);
@@ -28,6 +29,10 @@ function App() {
 		{
 			path: "/events",
 			element: <ExploreEvents />,
+		},
+		{
+			path: "/eventInfo",
+			element: <EventInfoPage />,
 		},
 	]);
 	return (
