@@ -17,32 +17,41 @@ const HomePage = () => {
             @import
             url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:wght@400;700&family=Lobster&family=Lobster+Two:ital@1&family=Poppins:wght@100;300&family=Quintessential&family=Shizuru&family=Ubuntu+Mono&family=Solway&family=Secular+One&family=Fira+Sans:ital,wght@1,500&display=swap');
           </style>
-          <div className={styles.navBarContainer}>
-            <div className={styles.navBarContent}>
-              <span>Secure Ticket</span>
+          <div className={styles.combined}>
+            <div className={styles.navBarContainer}>
+              <div className={styles.navBarContent}>
+                <div className={styles.navBarContentLeft}>
+                  <span>Secure Ticket</span>
+                </div>
+                <div className={styles.navBarContentRight}>
+                  <span onClick={() => {
+                      navigate("/organizeevent");
+                    }}>Oragnize an Event</span>
+                  <span>Explore more!</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className={styles.lineSepeartor}></div>
-          <div className={styles.mainContainer}>
-            <div className={styles.mainContent}>
-              <span className={styles.tagLine}>De-Ticket</span>
-              <span className={styles.lowerLine}>
-                {" "}
-                A safe platform for creating, selling, and buying tickets in the
-                most magical and easy way possible .
-              </span>
-              <div className={styles.btns}>
-                <button
-                  onClick={() => {
-                    navigate("/registerPerson");
-                  }}
-                  className={styles.registerBtn}
-                  style={{
-                    marginRight: "40px",
-                  }}
-                >
-                  <span>Register now!</span>
-                </button>
+            <div className={styles.mainContainer}>
+              <div className={styles.mainContent}>
+                <span className={styles.tagLine}>De-Ticket</span>
+                <span className={styles.lowerLine}>
+                  {" "}
+                  A safe platform for creating, selling, and buying tickets in
+                  the most magical and easy way possible .
+                </span>
+                <div className={styles.btns}>
+                  <button
+                    onClick={() => {
+                      navigate("/registerPerson");
+                    }}
+                    className={styles.registerBtn}
+                    style={{
+                      marginRight: "40px",
+                    }}
+                  >
+                    <span>Explore now!</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

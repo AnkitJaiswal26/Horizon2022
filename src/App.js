@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { NFTTicketContext } from "./Context/NFTContext";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
-import RegisterPersonPage from "./pages/RegisterPersonPage/RegisterPersonPage";
+import OrganizeEventPage from "./pages/OrganizeEventPage/OrganizeEventPage";
 
 function App() {
   // const {myname} = useContext(NFTTicketContext);
@@ -19,8 +19,8 @@ function App() {
       element: <HomePage />,
     },
     {
-      path: "/registerperson",
-      element: <RegisterPersonPage/>
+      path: "/organizeevent",
+      element: <OrganizeEventPage/>
     }
   ]);
   return (

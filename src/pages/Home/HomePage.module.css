@@ -1,3 +1,9 @@
+.combined{
+	width: 100%;
+	height: 100vh;
+	background-size: cover;
+	background-image: url("../../../images/4.jpg");
+}
 .homePageContainer {
 	width: 100%;
 	height: 100vh;
@@ -10,30 +16,35 @@
 
 .navBarContainer {
 	width: 100%;
-	height: 65px;
-	background-image: linear-gradient(to right, #3DA5D9, #004e75);
+	height: 45px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	margin-top: 20px;
 }
 
 .navBarContent {
 	width: 80%;
 	font-size: 1.2rem;
 	font-weight: bold;
+	display: flex;
+	justify-content: space-between;
 }
 
-.lineSepeartor {
-	width: 100%;
-	height: 3px;
-	background-image: linear-gradient(to right, #BDF7B7, #f0f0f0);
+.navBarContent:nth-child(){
+	padding: 15px 5px;
+}
+
+.navBarContentRight span, .navBarContentLeft span{
+	cursor: pointer;
+	font-family: 'Chivo Mono', monospace;
+	margin: 0px 50px;
 }
 
 .mainContainer {
 	width: 100%;
-	height: 100vh;
-	background-image: url("../../../images/1.jpg");
+	height: 80vh;
 	background-size: cover;
 	display: flex;
 	flex-direction: column;
@@ -99,15 +110,17 @@
   
   .registerBtn span:after {
 	content: '\00bb';
+	rotate: 90deg;
 	position: absolute;
 	opacity: 0;
-	top: 0;
-	right: -20px;
+	top: 30px;
+	right: 0px;
+	left: 0px;
 	transition: 0.5s;
   }
   
   .registerBtn:hover span {
-	padding-right: 35px;
+	padding-bottom: 25px;
   }
   
   .registerBtn:hover span:after {
