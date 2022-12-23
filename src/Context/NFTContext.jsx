@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import Wenb3Model from "web3modal";
 import axios from "axios";
-import { create as ipfsHTTPClient } from "ipfs-http-client";
+import { create as ipfsHTTpClient } from "ipfs-http-client";
 import lighthouse from "@lighthouse-web3/sdk";
+import { Web3Storage } from "web3.storage";
 
 import {
 	EventMarketplaceABI,
@@ -13,6 +14,14 @@ import {
 	EventTicketFactoryAddress,
 	EventTokenAddress,
 } from "./constants";
+
+const projectId = "your project id";
+const projectSecretKey = "secret key";
+const web3AccessToken =
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
+const web3Storage = new Web3Storage({ token: web3AccessToken });
+
+const subdomain = "your subdomain";
 
 const fetchEventMarketPlace = (contractAddress, signerOrProvider) =>
 	new ethers.Contract(contractAddress, EventMarketplaceABI, signerOrProvider);
@@ -82,6 +91,15 @@ const connectingWithEventNFT = async (contractAddress) => {
 	}
 };
 
+const makeFileObjects = (obj) => {
+	const blob = new Blob([JSON.stringify(obj)], { type: "application/json" });
+	const files = [
+		new File(["contents-of-file-1"], "plain-utf8.txt"),
+		new File([blob], "hello.json"),
+	];
+	return files;
+};
+
 export const EventTicketFactoryContext = React.createContext();
 
 export const NFTTicketProvider = ({ children }) => {
@@ -124,6 +142,7 @@ export const NFTTicketProvider = ({ children }) => {
 
 	const [eventNFTAddress, setEventNFTAddress] = useState("");
 	const [eventMarketplaceAddress, setEvenMarketplaceAddress] = useState("");
+	const [userIPFSHash, setUserIPFSHash] = useState("");
 
 	const fetchAccount = async () => {
 		try {
@@ -279,6 +298,47 @@ export const NFTTicketProvider = ({ children }) => {
 			return true;
 		} catch (err) {
 			console.log("Error while lisitng for sale", err);
+		}
+	};
+
+	const addUser = async (tokenURI) => {
+		try {
+			const contract = await connectingWithEventTicketFactory();
+			await contract.registerUser(tokenURI);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const fetchUser = async () => {
+		try {
+			const provider = new ethers.providers.JsonRpcProvider();
+			const contract = await fetchEventTicketFactory(provider);
+			const user = await contract.getUser();
+			setUserIPFSHash(user);
+			return user;
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	// Upload to IPFS account
+	const uploadJSONToIPFS = async (data) => {
+		try {
+			const files = makeFileObjects(data);
+			const cid = await web3Storage.put(files);
+			return cid;
+		} catch (error) {
+			console.log("Error uploading to IPFS");
+		}
+	};
+
+	const uploadFilesToIPFS = async (file) => {
+		try {
+			const cid = await web3Storage.put(file);
+			return cid;
+		} catch (err) {
+			console.log(err);
 		}
 	};
 
