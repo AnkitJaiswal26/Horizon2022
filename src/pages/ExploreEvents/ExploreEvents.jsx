@@ -1,9 +1,11 @@
-import React from "react";
-import styles from "./ExploreEvents.module.css";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./ExploreEvents.module.css";
+import { EventTicketFactoryContext } from "../../Context/NFTContext";
 
 const ExploreEvents = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
+	const { getActiveEvents } = useContext(EventTicketFactoryContext);
 
   const eventsList = [
     {
