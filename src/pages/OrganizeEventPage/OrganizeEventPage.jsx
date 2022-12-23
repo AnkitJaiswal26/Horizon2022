@@ -113,7 +113,7 @@ const OrganizeEventPage = () => {
               <div className={`${styles.inputContainer}`}>
                 <label className={`${styles.inputLabel}`}>Ticket Price</label>
                 <input
-                  className={styles.input}
+                  className={styles.inputCombined}
                   type="number"
                   placeholder="Enter ticket Price"
                   onChange={(e) => setPrice(e.target.value)}
@@ -123,7 +123,7 @@ const OrganizeEventPage = () => {
               <div className={`${styles.inputContainer}`}>
                 <label className={`${styles.inputLabel}`}>Total Supply</label>
                 <input
-                  className={styles.input}
+                  className={styles.inputCombined}
                   type="number"
                   placeholder="Enter ticket Price"
                   onChange={(e) => setSupply(e.target.value)}
@@ -132,13 +132,13 @@ const OrganizeEventPage = () => {
               </div>
             </div>
 
-            <div className={styles.inputGroup}>
+            <div className={styles.inputGroupLast}>
               <label className={`${styles.inputLabel}`}>
                 Upload Event Poster
               </label>
               <button
                 onClick={handlePosterUploadImage}
-                className={styles.input}
+                className={styles.inputCombined}
               >
                 {eventPoster}
               </button>
