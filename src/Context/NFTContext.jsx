@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import Wenb3Model from "web3modal";
 import axios from "axios";
-import { create as ipfsHTTpClient } from "ipfs-http-client";
 import lighthouse from "@lighthouse-web3/sdk";
 import { Web3Storage } from "web3.storage";
 
@@ -154,7 +153,15 @@ export const NFTTicketProvider = ({ children }) => {
 			console.log(err);
 		}
 	};
-	const createEvent = async (name, symbol, imageHash, price, supply) => {
+	const createEvent = async (
+		name,
+		symbol,
+		imageHash,
+		imageName,
+		description,
+		price,
+		supply
+	) => {
 		try {
 			const eventTicketFactoryContract =
 				await connectingWithEventTicketFactory();
@@ -164,6 +171,8 @@ export const NFTTicketProvider = ({ children }) => {
 				name,
 				symbol,
 				imageHash,
+				imageName,
+				description,
 				ethers.utils.parseUnits(price.toString(), "ether"),
 				supply,
 				{
@@ -225,8 +234,7 @@ export const NFTTicketProvider = ({ children }) => {
 
 	const fetchEventDetails = async (eventAddress) => {
 		try {
-			const provider = new ethers.providers.JsonRpcProvider();
-			const contract = fetchEventTicketFactory(provider);
+			const contract = await connectingWithEventTicketFactory();
 			const data = await contract.getEventDetails(eventAddress);
 			console.log(data);
 			return data;
@@ -241,10 +249,34 @@ export const NFTTicketProvider = ({ children }) => {
 			const provider = new ethers.providers.JsonRpcProvider();
 			const contract = fetchEventTicketFactory(provider);
 			const data = await contract.getActiveEvents();
-			console.log(data);
+
 			var result = [];
 			for (let i = 0; i < data.length; i++) {
-				result.push(fetchEventDetails(data[i]));
+				const eventData = await fetchEventDetails(data[i]);
+				console.log(eventData);
+				// console.log(
+				// 	ethers.utils.formatUnits(
+				// 		eventData[4]._hex.toString(),
+				// 		"ether"
+				// 	)
+				// );
+				result.push({
+					name: eventData.eventName,
+					symbol: eventData.eventSymbol,
+					cid: eventData.imageHash,
+					imageName: eventData.imageName,
+					description: eventData.description,
+					price: ethers.utils.formatUnits(
+						eventData.ticketPrice._hex.toString(),
+						"ether"
+					),
+					supply: ethers.utils.formatUnits(
+						eventData.totalSupply._hex.toString(),
+						"ether"
+					),
+					eventAddress: data[i],
+					marketplaceAddress: eventData.marketplace,
+				});
 			}
 			return result;
 		} catch (err) {
@@ -354,6 +386,19 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
+	const retrieveFiles = async (cid) => {
+		try {
+			const res = await web3Storage.get(cid);
+
+			const files = await res.files();
+			for (const file of files) {
+				console.log(`${file.cid} -- ${file.path} -- ${file.size}`);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	const [myname, setMyname] = useState("Tanish");
 
 	return (
@@ -374,6 +419,8 @@ export const NFTTicketProvider = ({ children }) => {
 				fetchUser,
 				uploadJSONToIPFS,
 				uploadFilesToIPFS,
+				fetchEventDetails,
+				retrieveFiles,
 			}}
 		>
 			{children}
