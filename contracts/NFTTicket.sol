@@ -78,13 +78,11 @@ contract EventNFT is Context, ERC721URIStorage {
     }
 
     function mint(
-        string memory tokenURI,
         address operator
     ) internal virtual isOrganiser returns (uint256) {
         _ticketIds.increment();
         uint256 newTicketId = _ticketIds.current();
         _mint(operator, newTicketId);
-        _setTokenURI(newTicketId, tokenURI);
 
         _ticketDetails[newTicketId] = TicketDetails({
             purchasePrice: _ticketPrice,
@@ -97,8 +95,7 @@ contract EventNFT is Context, ERC721URIStorage {
 
     function bulkMintTickets(
         uint256 numOfTickets,
-        address operator,
-        string[] memory tokensURI
+        address operator
     ) public virtual isValidTicketCount {
         require(
             (ticketCounts() + numOfTickets) <= 1000,
@@ -106,7 +103,7 @@ contract EventNFT is Context, ERC721URIStorage {
         );
 
         for (uint256 i = 0; i < numOfTickets; i++) {
-            mint(tokensURI[i], operator);
+            mint(operator);
         }
     }
 
@@ -155,24 +152,15 @@ contract EventNFT is Context, ERC721URIStorage {
         });
     }
 
-    function setSaleDetails(
-        uint256 ticketId,
-        uint256 sellingPrice,
-        address operator
-    ) public {
+    function setSaleDetails(uint256 ticketId, address operator) public {
         uint256 purchasePrice = _ticketDetails[ticketId].purchasePrice;
-
-        require(
-            purchasePrice + ((purchasePrice * 110) / 100) > sellingPrice,
-            "Re-selling price is more than 110%"
-        );
 
         require(
             _organiser != msg.sender,
             "Functionality only allowed for secondary market"
         );
 
-        _ticketDetails[ticketId].sellingPrice = sellingPrice;
+        _ticketDetails[ticketId].sellingPrice = purchasePrice;
         _ticketDetails[ticketId].forSale = true;
 
         if (!isSaleTicketAvailable(ticketId)) {
@@ -328,7 +316,7 @@ contract EventMarketplace {
     }
 }
 
-contract EventTicketsFactory is Ownable {
+contract EventTicketsFactory {
     struct Event {
         string eventName;
         string eventSymbol;
@@ -339,6 +327,7 @@ contract EventTicketsFactory is Ownable {
     }
 
     address[] private activeEvents;
+    address[] private activeEventsMarketplace;
     mapping(address => Event) private activeEventsMapping;
 
     event Created(address ntfAddress, address marketplaceAddress);
@@ -351,7 +340,7 @@ contract EventTicketsFactory is Ownable {
         string memory imageHash,
         uint256 ticketPrice,
         uint256 totalSupply
-    ) public onlyOwner returns (address) {
+    ) public returns (address, address) {
         EventNFT newEvent = new EventNFT(
             eventName,
             eventSymbol,
@@ -364,7 +353,6 @@ contract EventTicketsFactory is Ownable {
         EventMarketplace newMarketplace = new EventMarketplace(token, newEvent);
 
         address newEventAddress = address(newEvent);
-
         activeEvents.push(newEventAddress);
         activeEventsMapping[newEventAddress] = Event({
             eventName: eventName,
@@ -375,9 +363,17 @@ contract EventTicketsFactory is Ownable {
             marketplace: address(newMarketplace)
         });
 
+        activeEventsMarketplace.push(address(newMarketplace));
         emit Created(newEventAddress, address(newMarketplace));
+    }
 
-        return newEventAddress;
+    function fetchNewEventAddress() public view returns (address) {
+        require(activeEvents.length > 0, "No event exists!");
+        return activeEvents[activeEvents.length - 1];
+    }
+
+    function fetchNewEventMarketPlaceAddress() public view returns (address) {
+        return activeEventsMarketplace[activeEvents.length - 1];
     }
 
     // Get all active fests
