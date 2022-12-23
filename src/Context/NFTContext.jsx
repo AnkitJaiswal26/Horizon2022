@@ -25,7 +25,7 @@ const connectingWithSmartContract = async () => {
 
 export const NFTTicketContext = React.createContext();
 
-export const NFTTIcketProvider = ({ children }) => {
+export const NFTTicketProvider = ({ children }) => {
 	const [currentAccount, setCurrentAccount] = useState("");
 
 	// Check if wallet is connected
