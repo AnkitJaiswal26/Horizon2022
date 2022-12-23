@@ -34,7 +34,13 @@ const HomePage = () => {
                   >
                     Oragnize an Event
                   </span>
-                  <span>Explore more!</span>
+                  <span
+                    onClick={() => {
+                      navigate("/events");
+                    }}
+                  >
+                    Explore more!
+                  </span>
                 </div>
               </div>
             </div>
@@ -49,7 +55,7 @@ const HomePage = () => {
                 <div className={styles.btns}>
                   <button
                     onClick={() => {
-                      navigate("/registerPerson");
+                      navigate("/events");
                     }}
                     className={styles.registerBtn}
                     style={{
@@ -62,7 +68,6 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div></div>
         </div>
       );
     } else {

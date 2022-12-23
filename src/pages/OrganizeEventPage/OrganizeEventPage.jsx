@@ -16,7 +16,7 @@ const OrganizeEventPage = () => {
   const [eventSymbolFile, setEventSymbolFile] = useState(null);
   const [eventPoster, setEventPoster] = useState("Select file");
   const [eventPosterFile, setEventPosterFile] = useState(null);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(1.1);
   const [isChecked, setIsChecked] = useState(true);
 
   const handleSymbolUploadImage = (e) => {
@@ -82,9 +82,9 @@ const OrganizeEventPage = () => {
             <div className={`${styles.inputContainer}`}>
               <label className={`${styles.inputLabel}`}>Event Name</label>
               <input
-                className={`w-full px-5 py-2 sm:rounded-md font-medium bg-gray-100 placeholder-gray-500 text-sm border focus:outline-none focus:border-gray-400 focus:bg-white`}
+                className={styles.input}
                 type="username"
-                placeholder="Enter your name"
+                placeholder="Enter event name"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
               />
@@ -96,7 +96,7 @@ const OrganizeEventPage = () => {
               </label>
               <button
                 onClick={handleSymbolUploadImage}
-                className={`w-full px-5 py-2 sm:rounded-md font-medium bg-indigo-100 placeholder-gray-500 text-sm border focus:outline-none focus:border-gray-400 focus:bg-white`}
+                className={styles.input}
               >
                 {eventSymbol}
               </button>
@@ -104,7 +104,7 @@ const OrganizeEventPage = () => {
                 onChange={handleSymbolFileChange}
                 ref={uploadSymbolImageInput}
                 accept="image/*"
-                className={`w-full px-5 py-2 sm:rounded-md font-medium bg-gray-100 placeholder-gray-500 text-sm border focus:outline-none focus:border-gray-400 focus:bg-white ${styles.fileInput}`}
+                className={`${styles.fileInput}`}
                 type="file"
                 placeholder={""}
               />
@@ -113,7 +113,7 @@ const OrganizeEventPage = () => {
             <div className={`${styles.inputContainer}`}>
               <label className={`${styles.inputLabel}`}>Ticket Price</label>
               <input
-                className={`w-full px-5 py-2 sm:rounded-md font-medium bg-gray-100 placeholder-gray-500 text-sm border focus:outline-none focus:border-gray-400 focus:bg-white`}
+                className={styles.input}
                 type="number"
                 placeholder="Enter ticket Price"
                 onChange={(e) => setPrice(e.target.value)}
@@ -127,7 +127,7 @@ const OrganizeEventPage = () => {
               </label>
               <button
                 onClick={handlePosterUploadImage}
-                className={`w-full px-5 py-2 sm:rounded-md font-medium bg-indigo-100 placeholder-gray-500 text-sm border focus:outline-none focus:border-gray-400 focus:bg-white`}
+                className={styles.input}
               >
                 {eventPoster}
               </button>
@@ -135,15 +135,15 @@ const OrganizeEventPage = () => {
                 onChange={handlePosterFileChange}
                 ref={uploadPosterImageInput}
                 accept="image/*"
-                className={`w-full px-5 py-2 sm:rounded-md font-medium bg-gray-100 placeholder-gray-500 text-sm border focus:outline-none focus:border-gray-400 focus:bg-white ${styles.fileInput}`}
+                className={` ${styles.fileInput}`}
                 type="file"
                 placeholder={""}
               />
             </div>
 
-            <div className="flex flex-col items-center">
+            <div className={styles.button}>
               <a
-                className={` w-full font-semibold shadow-sm rounded-lg py-3 bg-indigo-400 text-gray-100 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow hover:bg-indigo-600 focus:shadow-sm focus:shadow-outline mt-5`}
+                className={styles.anchor}
                 onClick={handleSubmit}
                 href="/"
               >
