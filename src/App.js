@@ -8,6 +8,8 @@ import OrganizeEventPage from "./pages/OrganizeEventPage/OrganizeEventPage";
 import ExploreEvents from "./pages/ExploreEvents/ExploreEvents";
 import EventInfoPage from "./pages/EventInfoPage/EventInfoPage";
 import PurchaseTicket from "./pages/PurchaseTicket/PurchaseTicket";
+import ExploreMyEvents from "./pages/ExploreMyEvents/ExploreMyEvents";
+import MyEventInfoPage from "./pages/MyEventInfoPage/MyEventInfoPage";
 
 function App() {
 	// const {myname} = useContext(NFTTicketContext);
@@ -32,6 +34,14 @@ function App() {
 		{
 			path: "/eventInfo/:address",
 			element: <EventInfoPage />,
+		},
+		{
+			path: "/myevents",
+			element: <ExploreMyEvents />,
+		},
+		{
+			path: "/myevents/eventInfo/:address",
+			element: <MyEventInfoPage />,
 		},
 		{
 			path: "/purchaseticket/:eventAddress",

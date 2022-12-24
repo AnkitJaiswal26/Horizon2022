@@ -206,41 +206,48 @@ export const NFTTicketProvider = ({ children }) => {
 
 	const fetchMyEvents = async () => {
 		const provider = new ethers.providers.JsonRpcProvider();
-		const mainContract = await fetchEventTicketFactory(provider);
-		const events = await mainContract.getActiveEvents();
-
-		var result = [];
-		for (let i = 0; i < events[i]; i++) {
-			const contract = await fetchEventNFT(provider, events[i]);
-			const organiser = await contract.getOrganiser();
-			if (organiser === currentAccount) {
-				const eventData = await mainContract.getEventDetails(events[i]);
-				result.push({
-					name: eventData.eventName,
-					symbol: eventData.eventSymbol,
-					cid: eventData.imageHash,
-					imageName: eventData.imageName,
-					description: eventData.description,
-					price: ethers.utils.formatUnits(
-						eventData.ticketPrice._hex.toString(),
-						"ether"
-					),
-					supply: ethers.utils.formatUnits(
-						eventData.totalSupply._hex.toString(),
-						"ether"
-					),
-					eventAddress: events[i],
-					marketplaceAddress: eventData.marketplace,
-				});
+		try {
+			console.log(provider);
+			const mainContract = await fetchEventTicketFactory(provider);
+			console.log("hello");
+			const events = await mainContract.getActiveEvents();
+			var result = [];
+			for (let i = 0; i < events.length; i++) {
+				const contract = await connectingWithEventNFT(events[i]);
+				const organiser = await contract.getOrganiser();
+				if (organiser !== currentAccount) {
+					const eventData = await mainContract.getEventDetails(
+						events[i]
+					);
+					result.push({
+						name: eventData.eventName,
+						symbol: eventData.eventSymbol,
+						cid: eventData.imageHash,
+						imageName: eventData.imageName,
+						description: eventData.description,
+						price: ethers.utils.formatUnits(
+							eventData.ticketPrice._hex.toString(),
+							"ether"
+						),
+						supply: ethers.utils.formatUnits(
+							eventData.totalSupply._hex.toString(),
+							"ether"
+						),
+						eventAddress: events[i],
+						marketplaceAddress: eventData.marketplace,
+					});
+				}
 			}
+			return result;
+		} catch (err) {
+			console.log(err);
 		}
-		return result;
 	};
 
 	const fetchEventCustomers = async (eventAddress) => {
-		const provider = new ethers.providers.JsonRpcProvider();
-		const contract = await fetchEventNFT(provider, eventAddress);
+		const contract = await connectingWithEventNFT(eventAddress);
 		const customers = await contract.getAllCustomers();
+		console.log(customers);
 		return customers;
 	};
 
