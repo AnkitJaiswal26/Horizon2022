@@ -205,7 +205,12 @@ export const NFTTicketProvider = ({ children }) => {
 
 				for (let j = 0; j < tickets.length; j++) {
 					const tokenURI = await nftInstance.tokenURI(tickets[j]);
-					result.push({ ...eventData, ticketURI: tokenURI });
+					result.push({
+						...eventData,
+						ticketURI: tokenURI,
+						ticketId: tickets[j],
+						eventAddress: data[i],
+					});
 				}
 			}
 			return result;
@@ -379,15 +384,11 @@ export const NFTTicketProvider = ({ children }) => {
 		return result;
 	};
 
-	const listForSale = async (ticket, price, marketplace) => {
+	const listForSale = async (ticket, price, marketplace, address) => {
 		try {
 			const provider = new ethers.providers.JsonRpcProvider();
-			const nftInstance = fetchEventNFT(provider);
-			await nftInstance.setSaleDetails(
-				ticket,
-				ethers.utils.parseUnits(price.toString(), "ether"),
-				marketplace
-			);
+			const nftInstance = await connectingWithEventNFT(address);
+			await nftInstance.setSaleDetails(ticket, marketplace);
 			return true;
 		} catch (err) {
 			console.log("Error while lisitng for sale", err);

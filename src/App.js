@@ -10,12 +10,17 @@ import Resell from "./pages/Resell/Resell";
 import PurchaseResellTicket from "./pages/PurchaseResellTicket/PurchaseResellTicket";
 import ExploreMyEvents from "./pages/ExploreMyEvents/ExploreMyEvents";
 import MyEventInfoPage from "./pages/MyEventInfoPage/MyEventInfoPage";
+import MyTickets from "./pages/MyTickets/MyTickets";
 
 function App() {
 	const router = createBrowserRouter([
 		{
 			path: "/",
 			element: <HomePage />,
+		},
+		{
+			path: "/myTickets",
+			element: <MyTickets />,
 		},
 		{
 			path: "/organizeevent",
