@@ -28,6 +28,12 @@
     padding: 24px;
 }
 
+.resellPageNavbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .searchEventsContainer{
     display: flex;
     flex-direction: column;
@@ -38,6 +44,26 @@
 	font-family: 'Fira Sans', sans-serif;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
+}
+
+.button{
+    /* width: 30%; */
+    margin: auto;
+    font-size: medium;
+	font-weight: bold;
+    display: flex;
+    justify-content: center;
+    outline: none;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 15px;
+	cursor: pointer;
+    color: white;
+	background-color: #1DA0FF;
+}
+
+.button:hover{
+	background-color: #005ea0;
 }
 
 .eventSearchInput{

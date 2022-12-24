@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import styles from "./Resell.module.css";
 import { EventTicketFactoryContext } from "../../Context/NFTContext";
 const Resell = () => {
@@ -51,15 +51,27 @@ const Resell = () => {
         </div>
       </div>{" "}
       <div className={styles.eventPageBody}>
-        <div className={styles.searchEventsContainer}>
-          <span className={styles.searchEventsTitle}>
-            Search Ticket by Address
-          </span>
-          <input
-            className={styles.eventSearchInput}
-            type="text"
-            placeholder="Event Address"
-          />
+        <div className={styles.resellPageNavbar}>
+          <div className={styles.searchEventsContainer}>
+            <span className={styles.searchEventsTitle}>
+              Search Ticket by Address
+            </span>
+            <input
+              className={styles.eventSearchInput}
+              type="text"
+              placeholder="Event Address"
+            />
+          </div>
+          <div>
+            <button
+              className={styles.button}
+              onClick={() => {
+                navigate('/');
+              }}
+            >
+              Add to resell
+            </button>
+          </div>
         </div>
         <div className={styles.exploreEventsContainer}>
           <span className={styles.exploreEventsTitle}>Tickets to Sell</span>
@@ -81,7 +93,8 @@ const Resell = () => {
                     }}
                     className={styles.owner}
                   >
-                    Owner: <span className={styles.ownerName}>{event.ownerName}</span>
+                    Owner:{" "}
+                    <span className={styles.ownerName}>{event.ownerName}</span>
                   </div>
                   {/* <img src={{ image }} /> */}
                   <div className={styles.eventDescription}>{event.desc}</div>
