@@ -10,6 +10,7 @@ import EventInfoPage from "./pages/EventInfoPage/EventInfoPage";
 import PurchaseTicket from "./pages/PurchaseTicket/PurchaseTicket";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Resell from "./pages/Resell/Resell";
+import ResellForm from "./pages/ResellForm/ResellForm";
 import PurchaseResellTicket from "./pages/PurchaseResellTicket/PurchaseResellTicket";
 
 function App() {
@@ -51,6 +52,10 @@ function App() {
     {
       path: "/resell",
       element: <Resell />,
+    },
+    {
+      path: "/resellform",
+      element: <ResellForm />,
     },
   ]);
   return (

@@ -66,7 +66,7 @@ const Resell = () => {
             <button
               className={styles.button}
               onClick={() => {
-                navigate('/');
+                navigate('/resellform');
               }}
             >
               Add to resell
