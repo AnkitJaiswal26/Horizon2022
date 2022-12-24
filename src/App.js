@@ -34,7 +34,7 @@ function App() {
 			element: <PurchaseTicket />,
 		},
 		{
-			path: "/purchaseresellticket",
+			path: "/purchaseresellticket/:marketplace/:ticketId",
 			element: <PurchaseResellTicket />,
 		},
 		{

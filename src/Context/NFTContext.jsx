@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import Wenb3Model from "web3modal";
 import { Web3Storage } from "web3.storage";
@@ -96,8 +96,13 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
+	const fetchData = useCallback(async () => {
+		await checkIfWalletConnected();
+	}, []);
+
 	useEffect(() => {
-		checkIfWalletConnected();
+		fetchData().catch((err) => console.log(err));
+		// checkIfWalletConnected();
 	}, []);
 
 	const connectWallet = async () => {
@@ -190,8 +195,13 @@ export const NFTTicketProvider = ({ children }) => {
 			for (let i = 0; i < data.length; i++) {
 				const eventData = await mainContract.getEventDetails(data[i]);
 
-				const nftInstance = fetchEventNFT(provider, data[i]);
-				const tickets = await nftInstance.getTicketsOfCustomer();
+				const nftInstance = await connectingWithEventNFT(data[i]);
+				const accounts = await window.ethereum.request({
+					method: "eth_accounts",
+				});
+				const tickets = await nftInstance.getTicketsOfCustomer(
+					accounts[0]
+				);
 
 				for (let j = 0; j < tickets.length; j++) {
 					const tokenURI = await nftInstance.tokenURI(tickets[j]);
@@ -334,6 +344,41 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
+	const getAllTicketsForSale = async () => {
+		const provider = new ethers.providers.JsonRpcProvider();
+		const mainContract = await fetchEventTicketFactory(provider);
+		const events = mainContract.getActiveEvents();
+
+		var result = [];
+		for (let i = 0; i < events.length; i++) {
+			const eventData = await mainContract.getEventDetails(events[i]);
+
+			const contract = await connectingWithEventNFT(events[i]);
+			const tickets = await contract.getTicketsForSale();
+			for (let j = 0; j < tickets.length; j++) {
+				result.push({
+					name: eventData.eventName,
+					symbol: eventData.eventSymbol,
+					cid: eventData.imageHash,
+					imageName: eventData.imageName,
+					description: eventData.description,
+					price: ethers.utils.formatUnits(
+						eventData.ticketPrice._hex.toString(),
+						"ether"
+					),
+					supply: ethers.utils.formatUnits(
+						eventData.totalSupply._hex.toString(),
+						"ether"
+					),
+					eventAddress: events[i],
+					marketplaceAddress: eventData.marketplace,
+					ticketId: tickets[i],
+				});
+			}
+		}
+		return result;
+	};
+
 	const listForSale = async (ticket, price, marketplace) => {
 		try {
 			const provider = new ethers.providers.JsonRpcProvider();
@@ -424,6 +469,7 @@ export const NFTTicketProvider = ({ children }) => {
 				getAllCustomers,
 				fetchEventCustomers,
 				fetchMyEvents,
+				getAllTicketsForSale,
 			}}
 		>
 			{children}
