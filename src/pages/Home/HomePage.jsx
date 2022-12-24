@@ -42,10 +42,17 @@ const HomePage = () => {
                   </span>
                   <span
                     onClick={() => {
-                      navigate("/events");
+                      navigate("/dashboard");
                     }}
                   >
-                    Explore more!
+                    My Dashboard
+                  </span>
+                  <span
+                    onClick={() => {
+                      navigate("/resell");
+                    }}
+                  >
+                    Sell ticket
                   </span>
                 </div>
               </div>

@@ -8,6 +8,9 @@ import OrganizeEventPage from "./pages/OrganizeEventPage/OrganizeEventPage";
 import ExploreEvents from "./pages/ExploreEvents/ExploreEvents";
 import EventInfoPage from "./pages/EventInfoPage/EventInfoPage";
 import PurchaseTicket from "./pages/PurchaseTicket/PurchaseTicket";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Resell from "./pages/Resell/Resell";
+import PurchaseResellTicket from "./pages/PurchaseResellTicket/PurchaseResellTicket";
 
 function App() {
   // const {myname} = useContext(NFTTicketContext);
@@ -36,6 +39,18 @@ function App() {
     {
       path: "/purchaseticket",
       element: <PurchaseTicket />,
+    },
+    {
+      path: "/purchaseresellticket",
+      element: <PurchaseResellTicket />,
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+    },
+    {
+      path: "/resell",
+      element: <Resell />,
     },
   ]);
   return (
