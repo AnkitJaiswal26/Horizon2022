@@ -1,26 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Wenb3Model from "web3modal";
-import axios from "axios";
-import lighthouse from "@lighthouse-web3/sdk";
 import { Web3Storage } from "web3.storage";
 
 import {
 	EventMarketplaceABI,
 	EventNFTABI,
 	EventTicketFactoryABI,
-	EventTokenABI,
 	EventTicketFactoryAddress,
-	EventTokenAddress,
 } from "./constants";
 
-const projectId = "your project id";
-const projectSecretKey = "secret key";
 const web3AccessToken =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
 const web3Storage = new Web3Storage({ token: web3AccessToken });
-
-const subdomain = "your subdomain";
 
 const fetchEventMarketPlace = (contractAddress, signerOrProvider) =>
 	new ethers.Contract(contractAddress, EventMarketplaceABI, signerOrProvider);
@@ -32,24 +24,8 @@ const fetchEventTicketFactory = (signerOrProvider) =>
 		signerOrProvider
 	);
 
-const fetchEventToken = (signerOrProvider) =>
-	new ethers.Contract(EventTokenAddress, EventTokenABI, signerOrProvider);
-
 const fetchEventNFT = (contractAddress, signerOrProvider) =>
 	new ethers.Contract(contractAddress, EventNFTABI, signerOrProvider);
-
-const connectingWithEventToken = async () => {
-	try {
-		const web3Modal = new Wenb3Model();
-		const connection = await web3Modal.connect();
-		const provider = new ethers.providers.Web3Provider(connection);
-		const signer = provider.getSigner();
-		const contract = fetchEventToken(EventTokenAddress, signer);
-		return contract;
-	} catch (error) {
-		console.log("Something went wrong while connecting with contract!");
-	}
-};
 
 const connectingWithEventTicketFactory = async () => {
 	try {
@@ -91,11 +67,9 @@ const connectingWithEventNFT = async (contractAddress) => {
 };
 
 const makeFileObjects = (obj) => {
+	console.log(obj);
 	const blob = new Blob([JSON.stringify(obj)], { type: "application/json" });
-	const files = [
-		new File(["contents-of-file-1"], "plain-utf8.txt"),
-		new File([blob], "hello.json"),
-	];
+	const files = [new File([JSON.stringify(obj)], "ticket.txt")];
 	return files;
 };
 
@@ -139,20 +113,8 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	const [eventNFTAddress, setEventNFTAddress] = useState("");
-	const [eventMarketplaceAddress, setEvenMarketplaceAddress] = useState("");
 	const [userIPFSHash, setUserIPFSHash] = useState("");
 
-	const fetchAccount = async () => {
-		try {
-			const provider = new ethers.providers.JsonRpcProvider();
-			const contract = fetchEventTicketFactory(provider);
-			const data = await contract.getActiveEvents();
-			console.log(data);
-		} catch (err) {
-			console.log(err);
-		}
-	};
 	const createEvent = async (
 		name,
 		symbol,
@@ -167,7 +129,6 @@ export const NFTTicketProvider = ({ children }) => {
 				await connectingWithEventTicketFactory();
 
 			const res = await eventTicketFactoryContract.createNewEvent(
-				EventTokenAddress,
 				name,
 				symbol,
 				imageHash,
@@ -183,10 +144,8 @@ export const NFTTicketProvider = ({ children }) => {
 			const provider = new ethers.providers.JsonRpcProvider();
 			const contract = fetchEventTicketFactory(provider);
 			const _nftAddress = await contract.fetchNewEventAddress();
-			setEventNFTAddress(_nftAddress);
 			const _nftMarketPlaceAddress =
 				await contract.fetchNewEventMarketPlaceAddress();
-			setEventNFTAddress(_nftMarketPlaceAddress);
 
 			console.log(_nftAddress, _nftMarketPlaceAddress);
 			const nftInstance = await connectingWithEventNFT(_nftAddress);
@@ -223,13 +182,66 @@ export const NFTTicketProvider = ({ children }) => {
 	const fetchMyTickets = async () => {
 		try {
 			const provider = new ethers.providers.JsonRpcProvider();
-			const nftInstance = fetchEventNFT(provider);
-			const tickets = await nftInstance.getTicketsOfCustomer();
-			console.log(tickets);
-			return tickets;
+			const mainContract = fetchEventTicketFactory(provider);
+
+			const data = await mainContract.getActiveEvents();
+
+			var result = [];
+			for (let i = 0; i < data.length; i++) {
+				const eventData = await mainContract.getEventDetails(data[i]);
+
+				const nftInstance = fetchEventNFT(provider, data[i]);
+				const tickets = await nftInstance.getTicketsOfCustomer();
+
+				for (let j = 0; j < tickets.length; j++) {
+					const tokenURI = await nftInstance.tokenURI(tickets[j]);
+					result.push({ ...eventData, ticketURI: tokenURI });
+				}
+			}
+			return result;
 		} catch (err) {
 			console.log("Error in updating the ticket", err);
 		}
+	};
+
+	const fetchMyEvents = async () => {
+		const provider = new ethers.providers.JsonRpcProvider();
+		const mainContract = await fetchEventTicketFactory(provider);
+		const events = await mainContract.getActiveEvents();
+
+		var result = [];
+		for (let i = 0; i < events[i]; i++) {
+			const contract = await fetchEventNFT(provider, events[i]);
+			const organiser = await contract.getOrganiser();
+			if (organiser === currentAccount) {
+				const eventData = await mainContract.getEventDetails(events[i]);
+				result.push({
+					name: eventData.eventName,
+					symbol: eventData.eventSymbol,
+					cid: eventData.imageHash,
+					imageName: eventData.imageName,
+					description: eventData.description,
+					price: ethers.utils.formatUnits(
+						eventData.ticketPrice._hex.toString(),
+						"ether"
+					),
+					supply: ethers.utils.formatUnits(
+						eventData.totalSupply._hex.toString(),
+						"ether"
+					),
+					eventAddress: events[i],
+					marketplaceAddress: eventData.marketplace,
+				});
+			}
+		}
+		return result;
+	};
+
+	const fetchEventCustomers = async (eventAddress) => {
+		const provider = new ethers.providers.JsonRpcProvider();
+		const contract = await fetchEventNFT(provider, eventAddress);
+		const customers = await contract.getAllCustomers();
+		return customers;
 	};
 
 	const fetchEventDetails = async (eventAddress) => {
@@ -254,12 +266,6 @@ export const NFTTicketProvider = ({ children }) => {
 			for (let i = 0; i < data.length; i++) {
 				const eventData = await fetchEventDetails(data[i]);
 				console.log(eventData);
-				// console.log(
-				// 	ethers.utils.formatUnits(
-				// 		eventData[4]._hex.toString(),
-				// 		"ether"
-				// 	)
-				// );
 				result.push({
 					name: eventData.eventName,
 					symbol: eventData.eventSymbol,
@@ -284,15 +290,16 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	// TODO: to be completed properly
-	const onPurchaseTicket = async (marketplace, ticketPrice, initiator) => {
+	const onPurchaseTicket = async (marketplace, price, cid) => {
+		console.log(marketplace);
 		try {
 			const marketplaceInstance = await connectingWithEvenMarketPlace(
-				eventMarketplaceAddress
+				marketplace
 			);
-			const eventToken = await connectingWithEventToken();
-			await eventToken.approve(eventMarketplaceAddress, ticketPrice);
-			await marketplaceInstance.purchaseTicket();
+			console.log("hello");
+			await marketplaceInstance.purchaseTicket(cid, {
+				value: ethers.utils.parseUnits(price.toString(), "ether"),
+			});
 
 			return true;
 		} catch (err) {
@@ -300,19 +307,19 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	// TODO: to be completed properly
 	const onSecondaryPurchaseTicket = async (
+		marketplace,
 		ticketId,
-		ticketPrice,
-		initiator
+		price,
+		cid
 	) => {
 		try {
 			const marketplaceInstance = await connectingWithEvenMarketPlace(
-				eventMarketplaceAddress
+				marketplace
 			);
-			const eventToken = await connectingWithEventToken();
-			await eventToken.approve(eventMarketplaceAddress, ticketPrice);
-			await marketplaceInstance.secondaryPurchase(ticketId);
+			await marketplaceInstance.secondaryPurchase(ticketId, cid, {
+				value: ethers.utils.parseUnits(price.toString(), "ether"),
+			});
 
 			return true;
 		} catch (err) {
@@ -349,6 +356,7 @@ export const NFTTicketProvider = ({ children }) => {
 			const contract = await connectingWithEventNFT(contractAddress);
 			const users = await contract.getAllCustomers();
 			console.log(users);
+			return users;
 		} catch (err) {
 			console.log(err);
 		}
@@ -370,6 +378,8 @@ export const NFTTicketProvider = ({ children }) => {
 	const uploadJSONToIPFS = async (data) => {
 		try {
 			const files = makeFileObjects(data);
+			console.log(files);
+			// return "";
 			const cid = await web3Storage.put(files);
 			return cid;
 		} catch (error) {
@@ -386,30 +396,14 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	const retrieveFiles = async (cid) => {
-		try {
-			const res = await web3Storage.get(cid);
-
-			const files = await res.files();
-			for (const file of files) {
-				console.log(`${file.cid} -- ${file.path} -- ${file.size}`);
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const [myname, setMyname] = useState("Tanish");
-
 	return (
 		<EventTicketFactoryContext.Provider
 			value={{
+				userIPFSHash,
 				checkIfWalletConnected,
 				connectWallet,
 				currentAccount,
-				myname,
 				createEvent,
-				fetchAccount,
 				fetchMyTickets,
 				getActiveEvents,
 				onPurchaseTicket,
@@ -420,7 +414,9 @@ export const NFTTicketProvider = ({ children }) => {
 				uploadJSONToIPFS,
 				uploadFilesToIPFS,
 				fetchEventDetails,
-				retrieveFiles,
+				getAllCustomers,
+				fetchEventCustomers,
+				fetchMyEvents,
 			}}
 		>
 			{children}

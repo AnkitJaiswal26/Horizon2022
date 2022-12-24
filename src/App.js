@@ -13,11 +13,11 @@ import Resell from "./pages/Resell/Resell";
 import PurchaseResellTicket from "./pages/PurchaseResellTicket/PurchaseResellTicket";
 
 function App() {
-  // const {myname} = useContext(NFTTicketContext);
-  // const state = useContext(EventTicketFactoryContext);
-  // console.log(state);
-  //   const { checkIfWalletConnected, connectWallet, currentAccount, connectingWithSmartContract, myname } =
-  //     state;
+	// const {myname} = useContext(NFTTicketContext);
+	// const state = useContext(EventTicketFactoryContext);
+	// console.log(state);
+	//   const { checkIfWalletConnected, connectWallet, currentAccount, connectingWithSmartContract, myname } =
+	//     state;
 
   const router = createBrowserRouter([
     {
