@@ -5,12 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 const OrganizeEventPage = () => {
-	const {
-		uploadJSONToIPFS,
-		onPurchaseTicket,
-		fetchEventDetails,
-		getAllCustomers,
-	} = useContext(EventTicketFactoryContext);
+	const { uploadJSONToIPFS, onPurchaseTicket, fetchEventDetails } =
+		useContext(EventTicketFactoryContext);
 
 	const [eventAddress, setEventAddress] = useState("");
 

@@ -1,8 +1,5 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { useContext, useState } from "react";
-// import { EventTicketFactoryProvider } from "./Context/NFTContext";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/Home/HomePage";
 import OrganizeEventPage from "./pages/OrganizeEventPage/OrganizeEventPage";
 import ExploreEvents from "./pages/ExploreEvents/ExploreEvents";
@@ -12,6 +9,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Resell from "./pages/Resell/Resell";
 import ResellForm from "./pages/ResellForm/ResellForm";
 import PurchaseResellTicket from "./pages/PurchaseResellTicket/PurchaseResellTicket";
+import ExploreMyEvents from "./pages/ExploreMyEvents/ExploreMyEvents";
+import MyEventInfoPage from "./pages/MyEventInfoPage/MyEventInfoPage";
 
 function App() {
 	// const {myname} = useContext(NFTTicketContext);

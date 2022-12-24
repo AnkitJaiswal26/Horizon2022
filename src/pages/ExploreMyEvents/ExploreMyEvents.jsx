@@ -1,18 +1,16 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import styles from "./Resell.module.css";
+import { useNavigate } from "react-router-dom";
+import styles from "./ExploreEvents.module.css";
 import { EventTicketFactoryContext } from "../../Context/NFTContext";
 
-const Resell = () => {
+const ExploreMyEvents = () => {
 	const navigate = useNavigate();
-	const { getAllTicketsForSale, fetchMyTickets } = useContext(
-		EventTicketFactoryContext
-	);
+	const { fetchMyEvents } = useContext(EventTicketFactoryContext);
 
 	const [eventsList, setEventsList] = useState([]);
 
 	const fetchData = useCallback(async () => {
-		const data = await getAllTicketsForSale();
+		const data = await fetchMyEvents();
 		console.log(data);
 		setEventsList(data);
 	}, []);
@@ -33,35 +31,23 @@ const Resell = () => {
 						navigate("/");
 					}}
 				>
-					Back to Home
+					Back to Dashboard
 				</div>
 			</div>{" "}
 			<div className={styles.eventPageBody}>
-				<div className={styles.resellPageNavbar}>
-					<div className={styles.searchEventsContainer}>
-						<span className={styles.searchEventsTitle}>
-							Search Ticket by Address
-						</span>
-						<input
-							className={styles.eventSearchInput}
-							type="text"
-							placeholder="Event Address"
-						/>
-					</div>
-					<div>
-						<button
-							className={styles.button}
-							onClick={() => {
-								navigate("/");
-							}}
-						>
-							Add to resell
-						</button>
-					</div>
+				<div className={styles.searchEventsContainer}>
+					<span className={styles.searchEventsTitle}>
+						Search Event by Address
+					</span>
+					<input
+						className={styles.eventSearchInput}
+						type="text"
+						placeholder="Event Address"
+					/>
 				</div>
 				<div className={styles.exploreEventsContainer}>
 					<span className={styles.exploreEventsTitle}>
-						Tickets to Sell
+						Explore Events
 					</span>
 					<div className={styles.eventsListGrid}>
 						{eventsList.map((event, id) => {
@@ -70,7 +56,7 @@ const Resell = () => {
 									<div
 										onClick={() => {
 											navigate(
-												`/eventinfo/${event.eventAddress}`
+												`/myevents/eventinfo/${event.eventAddress}`
 											);
 										}}
 										className={styles.eventName}
@@ -86,12 +72,12 @@ const Resell = () => {
 										<button
 											onClick={() => {
 												navigate(
-													`/purchaseresellticket`
+													`/myevents/eventinfo/${event.eventAddress}`
 												);
 											}}
 											className={styles.registerBtn}
 										>
-											<span>Buy</span>
+											<span>Explore</span>
 										</button>
 									</div>
 								</div>
@@ -104,4 +90,4 @@ const Resell = () => {
 	);
 };
 
-export default Resell;
+export default ExploreMyEvents;
