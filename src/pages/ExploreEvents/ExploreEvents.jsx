@@ -65,7 +65,7 @@ const ExploreEvents = () => {
 						navigate("/");
 					}}
 				>
-					Back to Dashboard
+					Back to Home
 				</div>
 			</div>{" "}
 			<div className={styles.eventPageBody}>

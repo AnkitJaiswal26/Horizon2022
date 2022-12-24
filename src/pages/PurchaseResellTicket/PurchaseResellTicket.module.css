@@ -1,0 +1,190 @@
+* {
+	font-family: "Inter", sans-serif;
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+.wrapper {
+    height: 100vh;
+    background-image: linear-gradient(to right, rgba(0, 255, 255, 0.73), rgba(0, 42, 255, 0.52)),
+    url('../../../images/ticket.avif');
+    background-position: center;
+    background-size: cover;
+    opacity: 0.7;
+}
+
+.mainContainer {
+	width: 1000px;
+	height: 650px;
+    margin: auto;
+	border-radius: 5px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.contentBox {
+	width: 50%;
+	height: 100%;
+	background-color: #2b3445;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.contentBox img {
+	width: "75%";
+	height: 80%;
+	border-radius: 4px;
+}
+
+.contentBox h2 {
+	color: white;
+	font-size: 2em;
+	margin-bottom: 5px;
+}
+
+.formBox {
+	width: 50%;
+	height: 65%;
+    margin: auto;
+    margin-top: 125px;
+    border-radius: 10px;
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+    background-color: white;
+	justify-content: center;
+	align-items: center;
+	transition: 0.5s;
+}
+
+.formBox form {
+	width: 100%;
+}
+
+.heading {
+	font-size: 25px;
+	font-weight: 900;
+	text-align: center;
+	width: 100%;
+	color: rgb(0, 0, 0);
+	margin-bottom: 25px;
+    margin-top: -20px;
+}
+
+.inputContainer {
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 5px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.inputLabel {
+	font-family: 'Fira Sans', sans-serif;;
+	font-size: 1.1rem;
+    width: 40%;
+	color: #555;
+	font-weight: 600;
+	padding: 0;
+	margin: auto 0px;
+    text-align: center;
+}
+
+.inputGroup{
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.input {
+	border: 0px;
+    border-radius: 5px;
+    padding: 10px 15px;
+	/* outline: none; */
+	cursor: pointer;
+}
+
+.fileInput {
+	display: none;
+}
+
+.forgot {
+	font-size: 0.875rem;
+	color: rgba(99, 102, 241, 1);
+	font-weight: 600;
+	padding: 0;
+	margin: 0;
+}
+
+.already {
+	font-size: 1rem;
+	color: #555;
+	font-weight: 400;
+	margin-top: 20px;
+}
+
+.button{
+    width: 30%;
+    margin: auto;
+    font-size: medium;
+	font-weight: bold;
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px;
+	cursor: pointer;
+	background-image: linear-gradient(to right, #00e1ff, #002aff);
+}
+
+.button:hover{
+	background-image: linear-gradient(to right, #002aff, #00e1ff);
+}
+
+.anchor{
+	text-decoration: none;
+    color: white;
+}
+
+
+.alreadyLink {
+	font-size: 1rem;
+	color: rgb(99, 102, 241);
+	font-weight: 600;
+	margin-top: 20px;
+}
+
+@media (max-width: 1050px) {
+	.mainContainer {
+		width: calc(100% - 50px);
+	}
+
+	.formBox {
+		width: 45%;
+	}
+
+	.contentBox {
+		width: 55%;
+	}
+}
+
+@media (max-width: 900px) {
+	.mainContainer {
+		width: calc(100% - 100px);
+	}
+
+	.contentBox {
+		display: none;
+	}
+
+	.formBox {
+		width: 100%;
+	}
+}
