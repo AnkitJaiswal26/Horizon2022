@@ -179,16 +179,69 @@ export const NFTTicketProvider = ({ children }) => {
 		}
 	};
 
-	const fetchMyTickets = async (nftAddress) => {
+	const fetchMyTickets = async () => {
 		try {
 			const provider = new ethers.providers.JsonRpcProvider();
-			const nftInstance = fetchEventNFT(provider, nftAddress);
-			const tickets = await nftInstance.getTicketsOfCustomer();
-			console.log(tickets);
-			return tickets;
+			const mainContract = fetchEventTicketFactory(provider);
+
+			const data = await mainContract.getActiveEvents();
+
+			var result = [];
+			for (let i = 0; i < data.length; i++) {
+				const eventData = await mainContract.getEventDetails(data[i]);
+
+				const nftInstance = fetchEventNFT(provider, data[i]);
+				const tickets = await nftInstance.getTicketsOfCustomer();
+
+				for (let j = 0; j < tickets.length; j++) {
+					const tokenURI = await nftInstance.tokenURI(tickets[j]);
+					result.push({ ...eventData, ticketURI: tokenURI });
+				}
+			}
+			return result;
 		} catch (err) {
 			console.log("Error in updating the ticket", err);
 		}
+	};
+
+	const fetchMyEvents = async () => {
+		const provider = new ethers.providers.JsonRpcProvider();
+		const mainContract = await fetchEventTicketFactory(provider);
+		const events = await mainContract.getActiveEvents();
+
+		var result = [];
+		for (let i = 0; i < events[i]; i++) {
+			const contract = await fetchEventNFT(provider, events[i]);
+			const organiser = await contract.getOrganiser();
+			if (organiser === currentAccount) {
+				const eventData = await mainContract.getEventDetails(events[i]);
+				result.push({
+					name: eventData.eventName,
+					symbol: eventData.eventSymbol,
+					cid: eventData.imageHash,
+					imageName: eventData.imageName,
+					description: eventData.description,
+					price: ethers.utils.formatUnits(
+						eventData.ticketPrice._hex.toString(),
+						"ether"
+					),
+					supply: ethers.utils.formatUnits(
+						eventData.totalSupply._hex.toString(),
+						"ether"
+					),
+					eventAddress: events[i],
+					marketplaceAddress: eventData.marketplace,
+				});
+			}
+		}
+		return result;
+	};
+
+	const fetchEventCustomers = async (eventAddress) => {
+		const provider = new ethers.providers.JsonRpcProvider();
+		const contract = await fetchEventNFT(provider, eventAddress);
+		const customers = await contract.getAllCustomers();
+		return customers;
 	};
 
 	const fetchEventDetails = async (eventAddress) => {
@@ -362,6 +415,8 @@ export const NFTTicketProvider = ({ children }) => {
 				uploadFilesToIPFS,
 				fetchEventDetails,
 				getAllCustomers,
+				fetchEventCustomers,
+				fetchMyEvents,
 			}}
 		>
 			{children}
