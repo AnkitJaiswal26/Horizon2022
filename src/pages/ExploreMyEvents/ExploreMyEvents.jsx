@@ -50,39 +50,42 @@ const ExploreMyEvents = () => {
 						Explore Events
 					</span>
 					<div className={styles.eventsListGrid}>
-						{eventsList.map((event, id) => {
-							return (
-								<div id={id} className={styles.eventBox}>
-									<div
-										onClick={() => {
-											navigate(
-												`/myevents/eventinfo/${event.eventAddress}`
-											);
-										}}
-										className={styles.eventName}
-									>
-										<span>{event.name}</span>
-									</div>
-									{/* <img src={{ image }} /> */}
-									<div className={styles.eventDescription}>
-										{event.desc}
-									</div>
-									<div>Ticket Price: {event.price}</div>
-									<div>
-										<button
+						{eventsList &&
+							eventsList.map((event, id) => {
+								return (
+									<div id={id} className={styles.eventBox}>
+										<div
 											onClick={() => {
 												navigate(
 													`/myevents/eventinfo/${event.eventAddress}`
 												);
 											}}
-											className={styles.registerBtn}
+											className={styles.eventName}
 										>
-											<span>Explore</span>
-										</button>
+											<span>{event.name}</span>
+										</div>
+										{/* <img src={{ image }} /> */}
+										<div
+											className={styles.eventDescription}
+										>
+											{event.desc}
+										</div>
+										<div>Ticket Price: {event.price}</div>
+										<div>
+											<button
+												onClick={() => {
+													navigate(
+														`/myevents/eventinfo/${event.eventAddress}`
+													);
+												}}
+												className={styles.registerBtn}
+											>
+												<span>Explore</span>
+											</button>
+										</div>
 									</div>
-								</div>
-							);
-						})}
+								);
+							})}
 					</div>
 				</div>
 			</div>

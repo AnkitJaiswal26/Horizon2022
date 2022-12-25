@@ -7,7 +7,6 @@ import EventInfoPage from "./pages/EventInfoPage/EventInfoPage";
 import PurchaseTicket from "./pages/PurchaseTicket/PurchaseTicket";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Resell from "./pages/Resell/Resell";
-import ResellForm from "./pages/ResellForm/ResellForm";
 import PurchaseResellTicket from "./pages/PurchaseResellTicket/PurchaseResellTicket";
 import ExploreMyEvents from "./pages/ExploreMyEvents/ExploreMyEvents";
 import MyEventInfoPage from "./pages/MyEventInfoPage/MyEventInfoPage";
@@ -36,7 +35,7 @@ function App() {
 			element: <EventInfoPage />,
 		},
 		{
-			path: "/purchaseticket",
+			path: "/purchaseticket/:address",
 			element: <PurchaseTicket />,
 		},
 		{

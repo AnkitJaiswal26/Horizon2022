@@ -64,39 +64,42 @@ const Resell = () => {
 						Tickets to Sell
 					</span>
 					<div className={styles.eventsListGrid}>
-						{eventsList.map((event, id) => {
-							return (
-								<div id={id} className={styles.eventBox}>
-									<div
-										onClick={() => {
-											navigate(
-												`/eventinfo/${event.eventAddress}`
-											);
-										}}
-										className={styles.eventName}
-									>
-										<span>{event.name}</span>
-									</div>
-									{/* <img src={{ image }} /> */}
-									<div className={styles.eventDescription}>
-										{event.desc}
-									</div>
-									<div>Ticket Price: {event.price}</div>
-									<div>
-										<button
+						{eventsList &&
+							eventsList.map((event, id) => {
+								return (
+									<div id={id} className={styles.eventBox}>
+										<div
 											onClick={() => {
 												navigate(
-													`/purchaseresellticket`
+													`/eventinfo/${event.eventAddress}`
 												);
 											}}
-											className={styles.registerBtn}
+											className={styles.eventName}
 										>
-											<span>Buy</span>
-										</button>
+											<span>{event.name}</span>
+										</div>
+										{/* <img src={{ image }} /> */}
+										<div
+											className={styles.eventDescription}
+										>
+											{event.desc}
+										</div>
+										<div>Ticket Price: {event.price}</div>
+										<div>
+											<button
+												onClick={() => {
+													navigate(
+														`/purchaseresellticket`
+													);
+												}}
+												className={styles.registerBtn}
+											>
+												<span>Buy</span>
+											</button>
+										</div>
 									</div>
-								</div>
-							);
-						})}
+								);
+							})}
 					</div>
 				</div>
 			</div>

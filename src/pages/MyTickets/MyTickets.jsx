@@ -64,41 +64,44 @@ const MyTickets = () => {
 						My Tickets
 					</span>
 					<div className={styles.eventsListGrid}>
-						{eventsList.map((event, id) => {
-							return (
-								<div id={id} className={styles.eventBox}>
-									<div
-										onClick={(e) => {
-											addToSale(e, id);
-										}}
-										className={styles.eventName}
-									>
-										<span>{event.eventName}</span>
-									</div>
-									{/* <img src={{ image }} /> */}
-									<div className={styles.eventDescription}>
-										{event.description}
-									</div>
-									{/* <div>
+						{eventsList &&
+							eventsList.map((event, id) => {
+								return (
+									<div id={id} className={styles.eventBox}>
+										<div
+											onClick={(e) => {
+												addToSale(e, id);
+											}}
+											className={styles.eventName}
+										>
+											<span>{event.eventName}</span>
+										</div>
+										{/* <img src={{ image }} /> */}
+										<div
+											className={styles.eventDescription}
+										>
+											{event.description}
+										</div>
+										{/* <div>
 										Ticket Price:{" "}
 										{ethers.utils.parseUnits(
 											event.ticketPrice._hex.toString(),
 											"ether"
 										)}
 									</div> */}
-									<div>
-										<button
-											onClick={(e) => {
-												addToSale(e, id);
-											}}
-											className={styles.registerBtn}
-										>
-											<span>Sell</span>
-										</button>
+										<div>
+											<button
+												onClick={(e) => {
+													addToSale(e, id);
+												}}
+												className={styles.registerBtn}
+											>
+												<span>Sell</span>
+											</button>
+										</div>
 									</div>
-								</div>
-							);
-						})}
+								);
+							})}
 					</div>
 				</div>
 			</div>

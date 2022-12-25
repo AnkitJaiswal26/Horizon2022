@@ -3,12 +3,9 @@ import eventNFT from "./EventNFT.json";
 import eventMarketplace from "./EventMarketplace.json";
 
 export const EventTicketFactoryAddress =
-	"0x5FbDB2315678afecb367f032d93F642f64180aa3";
+	"0xA903b16271e02EAb2E883ec5DE7d49f399603923";
 export const EventTicketFactoryABI = eventTicketFactory.abi;
 
-export const EventNFTAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 export const EventNFTABI = eventNFT.abi;
 
-export const EventMarketplaceAddress =
-	"0x5FbDB2315678afecb367f032d93F642f64180aa3";
 export const EventMarketplaceABI = eventMarketplace.abi;

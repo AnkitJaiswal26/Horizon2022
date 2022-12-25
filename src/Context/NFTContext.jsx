@@ -10,10 +10,6 @@ import {
 	EventTicketFactoryAddress,
 } from "./constants";
 
-const web3AccessToken =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
-const web3Storage = new Web3Storage({ token: web3AccessToken });
-
 const fetchEventMarketPlace = (contractAddress, signerOrProvider) =>
 	new ethers.Contract(contractAddress, EventMarketplaceABI, signerOrProvider);
 
@@ -76,6 +72,10 @@ const makeFileObjects = (obj) => {
 export const EventTicketFactoryContext = React.createContext();
 
 export const NFTTicketProvider = ({ children }) => {
+	const web3AccessToken =
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
+	const web3Storage = new Web3Storage({ token: web3AccessToken });
+
 	const [currentAccount, setCurrentAccount] = useState("");
 
 	// Check if wallet is connected
@@ -132,6 +132,8 @@ export const NFTTicketProvider = ({ children }) => {
 		try {
 			const eventTicketFactoryContract =
 				await connectingWithEventTicketFactory();
+
+			console.log(eventTicketFactoryContract);
 
 			const res = await eventTicketFactoryContract.createNewEvent(
 				name,
@@ -202,6 +204,8 @@ export const NFTTicketProvider = ({ children }) => {
 				const tickets = await nftInstance.getTicketsOfCustomer(
 					accounts[0]
 				);
+
+				console.log(tickets);
 
 				for (let j = 0; j < tickets.length; j++) {
 					const tokenURI = await nftInstance.tokenURI(tickets[j]);
